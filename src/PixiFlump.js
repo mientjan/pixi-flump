@@ -1,3 +1,4 @@
+/// <reference path="../typings/tsd.d.ts" />
 "use strict";
 var Promise_1 = require("./util/Promise");
 var HttpRequest_1 = require("./util/HttpRequest");
@@ -16,7 +17,7 @@ var PixiFlump = (function () {
             this.url = basePath;
         }
     }
-    PixiFlump.load = function (url, flumpLibrary, onProcess) {
+    PixiFlump.load = function (url, pixiFlump, onProcess) {
         var baseDir = url;
         if (url.indexOf('.json') > -1) {
             baseDir = url.substr(0, url.lastIndexOf('/'));
@@ -27,14 +28,14 @@ var PixiFlump = (function () {
             }
             url += (url.substr(url.length - 1) != '/' ? '/' : '') + 'library.json';
         }
-        if (flumpLibrary == void 0) {
-            flumpLibrary = new PixiFlump(baseDir);
+        if (pixiFlump == void 0) {
+            pixiFlump = new PixiFlump(baseDir);
         }
         else {
-            flumpLibrary.url = baseDir;
+            pixiFlump.url = baseDir;
         }
         return HttpRequest_1.HttpRequest.getJSON(url).then(function (json) {
-            return flumpLibrary.processData(json, onProcess);
+            return pixiFlump.processData(json, onProcess);
         });
     };
     PixiFlump.prototype.hasLoaded = function () {

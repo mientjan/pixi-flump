@@ -1,10 +1,15 @@
-import {ITexture} from "../interface/ILibrary";
+/// <reference path="../../typings/tsd.d.ts" />
 
-export class Texture
+import {ITexture} from "../interface/ILibrary";
+import PIXI = require("pixi.js");
+
+import BaseTexture = PIXI.BaseTexture;
+
+export class Textureasd
 {
 	public name:string;
 	public time:number = 0.0;
-	public renderTexture:HTMLImageElement|HTMLCanvasElement;
+	public renderTexture:BaseTexture;
 	public originX:number;
 	public originY:number;
 	public x:number;
@@ -15,7 +20,7 @@ export class Texture
 	constructor(renderTexture:HTMLImageElement|HTMLCanvasElement, json:ITexture)
 	{
 		this.name = json.symbol;
-		this.renderTexture = renderTexture;
+		this.renderTexture = new BaseTexture(renderTexture);
 		this.originX = json.origin[0];
 		this.originY = json.origin[1];
 		this.x = json.rect[0];

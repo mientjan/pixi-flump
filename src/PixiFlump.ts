@@ -1,4 +1,4 @@
-
+/// <reference path="../typings/tsd.d.ts" />
 
 import {Promise} from "./util/Promise";
 import {ILoadable} from "./interface/ILoadable";
@@ -14,7 +14,7 @@ export class PixiFlump implements ILoadable<PixiFlump>
 {
 	public static EVENT_LOAD = 'load';
 
-	public static load(url:string, flumpLibrary?:PixiFlump, onProcess?:(process:number) => any ):Promise<PixiFlump>
+	public static load(url:string, pixiFlump?:PixiFlump, onProcess?:(process:number) => any ):Promise<PixiFlump>
 	{
 		var baseDir = url;
 
@@ -31,16 +31,16 @@ export class PixiFlump implements ILoadable<PixiFlump>
 			url += ( url.substr(url.length-1) != '/' ? '/' : '' ) +  'library.json';
 		}
 
-		if(flumpLibrary == void 0)
+		if(pixiFlump == void 0)
 		{
-			flumpLibrary = new PixiFlump(baseDir);
+			pixiFlump = new PixiFlump(baseDir);
 		} else {
-			flumpLibrary.url = baseDir;
+			pixiFlump.url = baseDir;
 		}
 		
 		return HttpRequest.getJSON(url).then((json:ILibrary) =>
 		{
-			return flumpLibrary.processData(json, onProcess);
+			return pixiFlump.processData(json, onProcess);
 		});
 	}
 

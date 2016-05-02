@@ -1,13 +1,15 @@
 "use strict";
 var Texture_1 = require("./Texture");
+var BaseTexture = PIXI.BaseTexture;
+var Rectangle = PIXI.Rectangle;
 var TextureGroupAtlas = (function () {
     function TextureGroupAtlas(renderTexture, json) {
-        this.flumpTextures = {};
-        this.renderTexture = renderTexture;
+        this.textures = {};
+        var baseTexture = this.renderTexture = new BaseTexture(renderTexture);
         var textures = json.textures;
         for (var i = 0; i < textures.length; i++) {
             var texture = textures[i];
-            this.flumpTextures[texture.symbol] = new Texture_1.Texture(renderTexture, texture);
+            this.textures[texture.symbol] = new Texture_1.Texture(baseTexture, new Rectangle(texture.rect[0], texture.rect[1], texture.rect[2], texture.rect[3]));
         }
     }
     TextureGroupAtlas.load = function (flumpLibrary, json) {

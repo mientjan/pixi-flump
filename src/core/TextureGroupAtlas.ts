@@ -3,6 +3,9 @@ import {Texture} from "./Texture";
 import {PixiFlump} from "../PixiFlump";
 import {IAtlas} from "../interface/ILibrary";
 import {IHashMap} from "../interface/IHashMap";
+import Texture = PIXI.Texture;
+import BaseTexture = PIXI.BaseTexture;
+import Rectangle = PIXI.Rectangle;
 
 export class TextureGroupAtlas
 {
@@ -25,18 +28,18 @@ export class TextureGroupAtlas
 		}).then((data:HTMLImageElement) => new TextureGroupAtlas(data, json) );
 	}
 
-	public renderTexture:HTMLImageElement;
-	public flumpTextures:IHashMap<Texture> = {};
+	public renderTexture:BaseTexture;
+	public textures:IHashMap<Texture> = {};
 
 	constructor( renderTexture:HTMLImageElement, json:IAtlas)
 	{
-		this.renderTexture = renderTexture;
+		var baseTexture = this.renderTexture = new BaseTexture(renderTexture);
 
 		var textures = json.textures;
 		for(var i = 0; i < textures.length; i++)
 		{
 			var texture = textures[i];
-			this.flumpTextures[texture.symbol] = new Texture(renderTexture, texture);
+			this.textures[texture.symbol] = new Texture(baseTexture, new Rectangle(texture.rect[0], texture.rect[1], texture.rect[2], texture.rect[3]));
 		}
 	}
 }
