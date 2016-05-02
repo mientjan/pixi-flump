@@ -3,11 +3,11 @@
 import {Promise} from "./util/Promise";
 import {ILoadable} from "./interface/ILoadable";
 import {HttpRequest} from "./util/HttpRequest";
-import {ILibrary} from "./core/ILibrary";
-import {FlumpMovieData} from "./core/MovieData";
-import {FlumpTextureGroup} from "./core/TextureGroup";
-import {IFlumpMovie} from "./core/IFlumpMovie";
-import {FlumpMovie} from "./core/FlumpMovie";
+
+import {TextureGroup} from "./core/TextureGroup";
+import {ILibrary} from "./interface/ILibrary";
+import {MovieData} from "./data/MovieData";
+import {QueueItem} from "./util/QueueItem";
 
 
 export class PixiFlump implements ILoadable<PixiFlump>
@@ -44,8 +44,8 @@ export class PixiFlump implements ILoadable<PixiFlump>
 		});
 	}
 
-	public movieData:Array<FlumpMovieData> = [];
-	public textureGroups:Array<FlumpTextureGroup> = [];
+	public movieData:Array<MovieData> = [];
+	public textureGroups:Array<TextureGroup> = [];
 
 	public url:string;
 	public md5:string;
@@ -105,10 +105,10 @@ export class PixiFlump implements ILoadable<PixiFlump>
 		this.referenceList = json.referenceList || null;
 		this.isOptimised = json.optimised || false;
 
-		var textureGroupLoaders:Array<Promise<FlumpTextureGroup>> = [];
+		var textureGroupLoaders:Array<Promise<TextureGroup>> = [];
 		for(var i = 0; i < json.movies.length; i++)
 		{
-			var flumpMovieData = new FlumpMovieData(this, json.movies[i]);
+			var flumpMovieData = new MovieData(this, json.movies[i]);
 			this.movieData.push(flumpMovieData);
 		}
 
@@ -116,12 +116,12 @@ export class PixiFlump implements ILoadable<PixiFlump>
 		for(var i = 0; i < textureGroups.length; i++)
 		{
 			var textureGroup = textureGroups[i];
-			var promise = FlumpTextureGroup.load(this, textureGroup);
+			var promise = TextureGroup.load(this, textureGroup);
 			textureGroupLoaders.push(promise);
 		}
 
 		return HttpRequest.wait(textureGroupLoaders, onProcess)
-			.then((textureGroups:Array<FlumpTextureGroup>) => {
+			.then((textureGroups:Array<TextureGroup>) => {
 
 				for(var i = 0; i < textureGroups.length; i++)
 				{
@@ -135,7 +135,7 @@ export class PixiFlump implements ILoadable<PixiFlump>
 			});
 	}
 
-	public getFlumpMovieData(name:string):FlumpMovieData
+	public getMovieData(name:string):MovieData
 	{
 		for(var i = 0; i < this.movieData.length; i++)
 		{
@@ -153,7 +153,7 @@ export class PixiFlump implements ILoadable<PixiFlump>
 	{
 		for(var i = 0; i < this.textureGroups.length; i++)
 		{
-			var flumpTextures = this.textureGroups[i].flumpTextures;
+			var flumpTextures = this.textureGroups[i].textures;
 
 			if(name in flumpTextures)
 			{

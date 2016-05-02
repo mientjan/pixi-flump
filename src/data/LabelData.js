@@ -1,11 +1,11 @@
 "use strict";
-var FlumpLabelData = (function () {
-    function FlumpLabelData(label, index, duration) {
+var LabelData = (function () {
+    function LabelData(label, index, duration) {
         this.label = label;
         this.index = index;
         this.duration = duration;
     }
-    return FlumpLabelData;
+    return LabelData;
 }());
-exports.FlumpLabelData = FlumpLabelData;
-//# sourceMappingURL=FlumpLabelData.js.map
+exports.LabelData = LabelData;
+//# sourceMappingURL=LabelData.js.map

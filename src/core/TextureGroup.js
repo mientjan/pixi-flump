@@ -1,19 +1,18 @@
 "use strict";
-var FlumpTextureGroupAtlas_1 = require('./FlumpTextureGroupAtlas');
-var Promise_1 = require('../../../core/util/Promise');
-var FlumpTextureGroup = (function () {
-    function FlumpTextureGroup(flumpTextureGroupAtlases, flumpTextures) {
-        this.flumpTextureGroupAtlases = flumpTextureGroupAtlases;
-        this.flumpTextures = flumpTextures;
+var TextureGroupAtlas_1 = require("./TextureGroupAtlas");
+var TextureGroup = (function () {
+    function TextureGroup(flumpTextureGroupAtlases, flumpTextures) {
+        this.textureGroupAtlases = flumpTextureGroupAtlases;
+        this.textures = flumpTextures;
     }
-    FlumpTextureGroup.load = function (flumpLibrary, json) {
+    TextureGroup.load = function (flumpLibrary, json) {
         var atlases = json.atlases;
         var loaders = [];
         for (var i = 0; i < atlases.length; i++) {
             var atlas = atlases[i];
-            loaders.push(FlumpTextureGroupAtlas_1.FlumpTextureGroupAtlas.load(flumpLibrary, atlas));
+            loaders.push(TextureGroupAtlas_1.TextureGroupAtlas.load(flumpLibrary, atlas));
         }
-        return Promise_1.Promise.all(loaders).then(function (atlases) {
+        return Promise.all(loaders).then(function (atlases) {
             var flumpTextures = {};
             for (var i = 0; i < atlases.length; i++) {
                 var atlas = atlases[i];
@@ -23,13 +22,13 @@ var FlumpTextureGroup = (function () {
                     }
                 }
             }
-            return new FlumpTextureGroup(atlases, flumpTextures);
+            return new TextureGroup(atlases, flumpTextures);
         }).catch(function (err) {
             console.warn('could not load textureGroup', err);
             throw new Error('could not load textureGroup');
         });
     };
-    return FlumpTextureGroup;
+    return TextureGroup;
 }());
-exports.FlumpTextureGroup = FlumpTextureGroup;
+exports.TextureGroup = TextureGroup;
 //# sourceMappingURL=TextureGroup.js.map

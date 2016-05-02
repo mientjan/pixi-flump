@@ -1,10 +1,7 @@
-import {IFlumpMovie} from "./IFlumpMovie";
-import {DisplayType} from "../../enum/DisplayType";
-import {ITexture} from "./IFlumpLibrary";
+import {ITexture} from "../interface/ILibrary";
 
-export class FlumpTexture implements IFlumpMovie
+export class Texture
 {
-	public type:DisplayType = DisplayType.FLUMPSYMBOL;
 	public name:string;
 	public time:number = 0.0;
 	public renderTexture:HTMLImageElement|HTMLCanvasElement;

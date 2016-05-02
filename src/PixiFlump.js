@@ -1,9 +1,9 @@
 "use strict";
 var Promise_1 = require("./util/Promise");
 var HttpRequest_1 = require("./util/HttpRequest");
-var MovieData_1 = require("./core/MovieData");
 var TextureGroup_1 = require("./core/TextureGroup");
-var FlumpMovie_1 = require("./core/FlumpMovie");
+var MovieData_1 = require("./data/MovieData");
+var QueueItem_1 = require("./util/QueueItem");
 var PixiFlump = (function () {
     function PixiFlump(basePath) {
         this.movieData = [];
@@ -66,13 +66,13 @@ var PixiFlump = (function () {
         this.isOptimised = json.optimised || false;
         var textureGroupLoaders = [];
         for (var i = 0; i < json.movies.length; i++) {
-            var flumpMovieData = new MovieData_1.FlumpMovieData(this, json.movies[i]);
+            var flumpMovieData = new MovieData_1.MovieData(this, json.movies[i]);
             this.movieData.push(flumpMovieData);
         }
         var textureGroups = json.textureGroups;
         for (var i = 0; i < textureGroups.length; i++) {
             var textureGroup = textureGroups[i];
-            var promise = TextureGroup_1.FlumpTextureGroup.load(this, textureGroup);
+            var promise = TextureGroup_1.TextureGroup.load(this, textureGroup);
             textureGroupLoaders.push(promise);
         }
         return HttpRequest_1.HttpRequest.wait(textureGroupLoaders, onProcess)
@@ -85,7 +85,7 @@ var PixiFlump = (function () {
             return _this;
         });
     };
-    PixiFlump.prototype.getFlumpMovieData = function (name) {
+    PixiFlump.prototype.getMovieData = function (name) {
         for (var i = 0; i < this.movieData.length; i++) {
             var movieData = this.movieData[i];
             if (movieData.id == name) {
@@ -97,7 +97,7 @@ var PixiFlump = (function () {
     PixiFlump.prototype.createSymbol = function (name, paused) {
         if (paused === void 0) { paused = false; }
         for (var i = 0; i < this.textureGroups.length; i++) {
-            var flumpTextures = this.textureGroups[i].flumpTextures;
+            var flumpTextures = this.textureGroups[i].textures;
             if (name in flumpTextures) {
                 return flumpTextures[name];
             }
@@ -105,8 +105,8 @@ var PixiFlump = (function () {
         for (var i = 0; i < this.movieData.length; i++) {
             var movieData = this.movieData[i];
             if (movieData.id == name) {
-                var movie = new FlumpMovie_1.FlumpMovie(this, name);
-                movie.getQueue().add(new QueueItem(null, 0, movie.frames, -1, 0));
+                var movie = new FlumpMovie(this, name);
+                movie.getQueue().add(new QueueItem_1.QueueItem(null, 0, movie.frames, -1, 0));
                 movie.paused = paused;
                 return movie;
             }
@@ -124,7 +124,7 @@ var PixiFlump = (function () {
         for (var i = 0; i < this.movieData.length; i++) {
             var movieData = this.movieData[i];
             if (movieData.id == name) {
-                var movie = new FlumpMovie_1.FlumpMovie(this, name);
+                var movie = new FlumpMovie(this, name);
                 movie.paused = true;
                 return movie;
             }

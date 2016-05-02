@@ -1,7 +1,6 @@
+import {IKeyframe} from "../interface/ILibrary";
 
-import {IKeyframe} from "./IFlumpLibrary";
-
-export class FlumpKeyframeData
+export class KeyframeData
 {
 	index:number;
 	duration:number;

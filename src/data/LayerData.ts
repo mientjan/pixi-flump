@@ -1,9 +1,12 @@
-import {ILayer} from "../core/IFlumpLibrary";
-export class LayerData {
+import {ILayer} from "../interface/ILibrary";
+import {KeyframeData} from "./KeyframeData";
+
+export class LayerData
+{
 
 	public name:string;
 	public flipbook:boolean;
-	public flumpKeyframeDatas:Array<KeyframeData> = [];
+	public keyframeData:Array<KeyframeData> = [];
 
 	public frames:number;
 
@@ -11,15 +14,15 @@ export class LayerData {
 	{
 		this.name = json.name;
 		this.flipbook = 'flipbook' in json ? !!json.flipbook : false;
-		
+
 		var keyframes = json.keyframes;
 		var keyFrameData:KeyframeData = null;
-		
+
 		for(var i = 0; i < keyframes.length; i++)
 		{
 			var keyframe = keyframes[i];
 			keyFrameData = new KeyframeData(keyframe);
-			this.flumpKeyframeDatas.push( keyFrameData );
+			this.keyframeData.push(keyFrameData);
 		}
 
 		this.frames = keyFrameData.index + keyFrameData.duration;
@@ -27,10 +30,11 @@ export class LayerData {
 
 	public getKeyframeForFrame(frame:number):KeyframeData
 	{
-		var datas = this.flumpKeyframeDatas;
+		var datas = this.keyframeData;
 		for(var i = 1; i < datas.length; i++)
 		{
-			if (datas[i].index > frame) {
+			if(datas[i].index > frame)
+			{
 				return datas[i - 1];
 			}
 		}
@@ -38,12 +42,13 @@ export class LayerData {
 		return datas[datas.length - 1];
 	}
 
-	public getKeyframeAfter( flumpKeyframeData:KeyframeData):KeyframeData
+	public getKeyframeAfter(flumpKeyframeData:KeyframeData):KeyframeData
 	{
-		for(var i = 0; i < this.flumpKeyframeDatas.length - 1; i++) {
-			if (this.flumpKeyframeDatas[i] === flumpKeyframeData)
+		for(var i = 0; i < this.keyframeData.length - 1; i++)
+		{
+			if(this.keyframeData[i] === flumpKeyframeData)
 			{
-				return this.flumpKeyframeDatas[i + 1];
+				return this.keyframeData[i + 1];
 			}
 		}
 		return null;

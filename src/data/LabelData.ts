@@ -1,4 +1,4 @@
-export class FlumpLabelData
+export class LabelData
 {
 	public label:string;
 	public index:number;

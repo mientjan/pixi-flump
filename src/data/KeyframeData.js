@@ -1,6 +1,6 @@
 "use strict";
-var FlumpKeyframeData = (function () {
-    function FlumpKeyframeData(json) {
+var KeyframeData = (function () {
+    function KeyframeData(json) {
         if (json.length != void 0) {
             this.fromArray(json);
         }
@@ -24,7 +24,7 @@ var FlumpKeyframeData = (function () {
             this.ease = 'ease' in jsonObject ? jsonObject.ease : 0.0;
         }
     }
-    FlumpKeyframeData.prototype.getValueOrder = function () {
+    KeyframeData.prototype.getValueOrder = function () {
         return [
             'index',
             'duration',
@@ -40,7 +40,7 @@ var FlumpKeyframeData = (function () {
             'ease'
         ];
     };
-    FlumpKeyframeData.prototype.toArray = function () {
+    KeyframeData.prototype.toArray = function () {
         var order = this.getValueOrder();
         var data = new Array(order.length);
         for (var i = 0; i < order.length; i++) {
@@ -49,7 +49,7 @@ var FlumpKeyframeData = (function () {
         }
         return data;
     };
-    FlumpKeyframeData.prototype.fromArray = function (data) {
+    KeyframeData.prototype.fromArray = function (data) {
         var order = this.getValueOrder();
         for (var i = 0; i < data.length; i++) {
             var name = order[i];
@@ -57,7 +57,7 @@ var FlumpKeyframeData = (function () {
             this[name] = value;
         }
     };
-    return FlumpKeyframeData;
+    return KeyframeData;
 }());
-exports.FlumpKeyframeData = FlumpKeyframeData;
+exports.KeyframeData = KeyframeData;
 //# sourceMappingURL=KeyframeData.js.map

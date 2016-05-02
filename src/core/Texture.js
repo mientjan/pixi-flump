@@ -1,8 +1,6 @@
 "use strict";
-var DisplayType_1 = require("../../enum/DisplayType");
-var FlumpTexture = (function () {
-    function FlumpTexture(renderTexture, json) {
-        this.type = DisplayType_1.DisplayType.FLUMPSYMBOL;
+var Texture = (function () {
+    function Texture(renderTexture, json) {
         this.time = 0.0;
         this.name = json.symbol;
         this.renderTexture = renderTexture;
@@ -13,16 +11,16 @@ var FlumpTexture = (function () {
         this.width = json.rect[2];
         this.height = json.rect[3];
     }
-    FlumpTexture.prototype.onTick = function (delta) {
+    Texture.prototype.onTick = function (delta) {
     };
-    FlumpTexture.prototype.draw = function (ctx) {
+    Texture.prototype.draw = function (ctx) {
         ctx.drawImage(this.renderTexture, this.x, this.y, this.width, this.height, 0, 0, this.width, this.height);
         return true;
     };
-    FlumpTexture.prototype.reset = function () {
+    Texture.prototype.reset = function () {
         this.time = 0.0;
     };
-    return FlumpTexture;
+    return Texture;
 }());
-exports.FlumpTexture = FlumpTexture;
-//# sourceMappingURL=FlumpTexture.js.map
+exports.Texture = Texture;
+//# sourceMappingURL=Texture.js.map

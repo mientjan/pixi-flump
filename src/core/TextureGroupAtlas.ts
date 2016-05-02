@@ -1,12 +1,12 @@
-import {FlumpLibrary} from '../FlumpLibrary';
-import {IHashMap} from '../../../core/interface/IHashMap';
-import {Promise} from '../../../core/util/Promise';
-import {IAtlas} from "./IFlumpLibrary";
-import {FlumpTexture} from "./FlumpTexture";
 
-export class FlumpTextureGroupAtlas
+import {Texture} from "./Texture";
+import {PixiFlump} from "../PixiFlump";
+import {IAtlas} from "../interface/ILibrary";
+import {IHashMap} from "../interface/IHashMap";
+
+export class TextureGroupAtlas
 {
-	public static load(flumpLibrary:FlumpLibrary, json:IAtlas):Promise<FlumpTextureGroupAtlas>
+	public static load(flumpLibrary:PixiFlump, json:IAtlas):Promise<TextureGroupAtlas>
 	{
 		var file = json.file;
 		var url = flumpLibrary.url + '/' + file;
@@ -22,13 +22,11 @@ export class FlumpTextureGroupAtlas
 			};
 
 			img.src = url;
-		}).then((data:HTMLImageElement) => {
-			return new FlumpTextureGroupAtlas(data, json);
-		});
+		}).then((data:HTMLImageElement) => new TextureGroupAtlas(data, json) );
 	}
 
 	public renderTexture:HTMLImageElement;
-	public flumpTextures:IHashMap<FlumpTexture> = {};
+	public flumpTextures:IHashMap<Texture> = {};
 
 	constructor( renderTexture:HTMLImageElement, json:IAtlas)
 	{
@@ -38,7 +36,7 @@ export class FlumpTextureGroupAtlas
 		for(var i = 0; i < textures.length; i++)
 		{
 			var texture = textures[i];
-			this.flumpTextures[texture.symbol] = new FlumpTexture(renderTexture, texture);
+			this.flumpTextures[texture.symbol] = new Texture(renderTexture, texture);
 		}
 	}
 }

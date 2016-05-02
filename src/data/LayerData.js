@@ -1,20 +1,21 @@
 "use strict";
+var KeyframeData_1 = require("./KeyframeData");
 var LayerData = (function () {
     function LayerData(json) {
-        this.flumpKeyframeDatas = [];
+        this.keyframeData = [];
         this.name = json.name;
         this.flipbook = 'flipbook' in json ? !!json.flipbook : false;
         var keyframes = json.keyframes;
         var keyFrameData = null;
         for (var i = 0; i < keyframes.length; i++) {
             var keyframe = keyframes[i];
-            keyFrameData = new KeyframeData(keyframe);
-            this.flumpKeyframeDatas.push(keyFrameData);
+            keyFrameData = new KeyframeData_1.KeyframeData(keyframe);
+            this.keyframeData.push(keyFrameData);
         }
         this.frames = keyFrameData.index + keyFrameData.duration;
     }
     LayerData.prototype.getKeyframeForFrame = function (frame) {
-        var datas = this.flumpKeyframeDatas;
+        var datas = this.keyframeData;
         for (var i = 1; i < datas.length; i++) {
             if (datas[i].index > frame) {
                 return datas[i - 1];
@@ -23,9 +24,9 @@ var LayerData = (function () {
         return datas[datas.length - 1];
     };
     LayerData.prototype.getKeyframeAfter = function (flumpKeyframeData) {
-        for (var i = 0; i < this.flumpKeyframeDatas.length - 1; i++) {
-            if (this.flumpKeyframeDatas[i] === flumpKeyframeData) {
-                return this.flumpKeyframeDatas[i + 1];
+        for (var i = 0; i < this.keyframeData.length - 1; i++) {
+            if (this.keyframeData[i] === flumpKeyframeData) {
+                return this.keyframeData[i + 1];
             }
         }
         return null;
