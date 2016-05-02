@@ -1,0 +1,20 @@
+{
+  "name": "pixi-flump",
+  "main": "bin/pixi-flump.js",
+  "ignore": [
+    "**/.*",
+    "docs",
+    "gulp",
+    "node_modules",
+    "bower_components",
+    "test",
+    "bower.json",
+    "gulpfile.js",
+    "inch.json",
+    "testem.json"
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "pixi.js": "^3.0.11"
+  }
+}
