@@ -74,16 +74,17 @@ var MovieLayer = (function (_super) {
         var keyframe = this._layerData.getKeyframeForFrame(Math.floor(frame));
         if (keyframe.ref != -1 && keyframe.ref != null) {
             if (this._symbol != this._symbols[keyframe.ref]) {
-                this._movie.removeChild(this._symbol);
+                this.removeChildren();
                 this._symbol = this._symbols[keyframe.ref];
                 if (this._symbol instanceof FlumpMovie_1.FlumpMovie) {
                     this._symbol.reset();
                 }
-                this._movie.addChild(this._symbol);
+                this.addChild(this._symbol);
             }
             this.setKeyframeData(this._symbol, keyframe, frame);
         }
         else {
+            this.removeChildren();
             this._symbol = null;
         }
         return true;

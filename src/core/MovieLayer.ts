@@ -27,7 +27,7 @@ export class MovieLayer extends PIXI.Container
 	constructor(index:number, movie:FlumpMovie, library:FlumpLibrary, layerData:LayerData)
 	{
 		super();
-		
+
 		var keyframeData = layerData.keyframeData;
 
 		this._index = index;
@@ -120,7 +120,7 @@ export class MovieLayer extends PIXI.Container
 		{
 			if(this._symbol != this._symbols[keyframe.ref])
 			{
-				this._movie.removeChild(this._symbol);
+				this.removeChildren();
 
 				this._symbol = this._symbols[keyframe.ref];
 
@@ -129,13 +129,14 @@ export class MovieLayer extends PIXI.Container
 					( <FlumpMovie> this._symbol).reset();
 				}
 				
-				this._movie.addChild(this._symbol);
+				this.addChild(this._symbol);
 			}
 
 			this.setKeyframeData(this._symbol, keyframe, frame);
 		}
 		else
 		{
+			this.removeChildren();
 			this._symbol = null;
 		}
 
@@ -197,9 +198,9 @@ export class MovieLayer extends PIXI.Container
 			}
 		}
 
-		symbol.setTransform(x, y, scaleX, scaleY, 0, skewX, skewY, pivotX, pivotY)
-		symbol.visible = keyframe.visible;
-		symbol.alpha = alpha;
+		this.setTransform(x, y, scaleX, scaleY, 0, skewX, skewY, pivotX, pivotY)
+		this.visible = keyframe.visible;
+		this.alpha = alpha;
 
 		// if(skewX != 0)
 		// {
