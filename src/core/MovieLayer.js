@@ -1,10 +1,17 @@
 "use strict";
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var FlumpMtx_1 = require("./FlumpMtx");
 var FlumpMovie_1 = require("./FlumpMovie");
 var LabelData_1 = require("../data/LabelData");
 var KeyframeData_1 = require("../data/KeyframeData");
-var MovieLayer = (function () {
+var MovieLayer = (function (_super) {
+    __extends(MovieLayer, _super);
     function MovieLayer(index, movie, library, layerData) {
+        _super.call(this);
         this.name = '';
         this._frame = 0;
         this._symbols = {};
@@ -67,11 +74,12 @@ var MovieLayer = (function () {
         var keyframe = this._layerData.getKeyframeForFrame(Math.floor(frame));
         if (keyframe.ref != -1 && keyframe.ref != null) {
             if (this._symbol != this._symbols[keyframe.ref]) {
+                this._movie.removeChild(this._symbol);
                 this._symbol = this._symbols[keyframe.ref];
                 if (this._symbol instanceof FlumpMovie_1.FlumpMovie) {
                     this._symbol.reset();
                 }
-                this._movie.addChildAt(this._symbol, this._index);
+                this._movie.addChild(this._symbol);
             }
             this.setKeyframeData(this._symbol, keyframe, frame);
         }
@@ -140,5 +148,5 @@ var MovieLayer = (function () {
         }
     };
     return MovieLayer;
-}());
+}(PIXI.Container));
 exports.MovieLayer = MovieLayer;

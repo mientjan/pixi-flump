@@ -7,7 +7,7 @@ import {LayerData} from "../data/LayerData";
 import {LabelData} from "../data/LabelData";
 import {KeyframeData} from "../data/KeyframeData";
 
-export class MovieLayer
+export class MovieLayer extends PIXI.Container
 {
 	public name:string = '';
 
@@ -26,6 +26,8 @@ export class MovieLayer
 
 	constructor(index:number, movie:FlumpMovie, library:FlumpLibrary, layerData:LayerData)
 	{
+		super();
+		
 		var keyframeData = layerData.keyframeData;
 
 		this._index = index;
@@ -118,14 +120,16 @@ export class MovieLayer
 		{
 			if(this._symbol != this._symbols[keyframe.ref])
 			{
+				this._movie.removeChild(this._symbol);
+
 				this._symbol = this._symbols[keyframe.ref];
 
 				if(this._symbol instanceof FlumpMovie)
 				{
 					( <FlumpMovie> this._symbol).reset();
 				}
-
-				this._movie.addChildAt(this._symbol, this._index);
+				
+				this._movie.addChild(this._symbol);
 			}
 
 			this.setKeyframeData(this._symbol, keyframe, frame);

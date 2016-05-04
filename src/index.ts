@@ -1,11 +1,3 @@
-import FlumpLibrary = require('./FlumpLibrary');
+import {FlumpLibrary} from "./FlumpLibrary";
 
-if(!global){
-	var global:any = {};
-}
-
-if(!global.PIXI){
-	global.PIXI = {};
-}
-
-global.PIXI.FlumpLibrary = FlumpLibrary;
+export = FlumpLibrary;

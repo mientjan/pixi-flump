@@ -2,16 +2,13 @@
   "name": "pixi-flump",
   "description": "Pixi Flump Library",
   "version": "1.0.0",
-  "main": "./src/index.ts",
-  "bin": {
-    "pixi-flump": "pixi-flump.js"
-  },
+  "main": "./src/index.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
     "start": "gulp && gulp watch",
-    "build": "gulp"
+    "build": "tsc && gulp build"
   },
   "repository": {
     "type": "git",

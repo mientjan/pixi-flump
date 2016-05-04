@@ -1,9 +1,3 @@
 "use strict";
-var FlumpLibrary = require('./FlumpLibrary');
-if (!global) {
-    var global = {};
-}
-if (!global.PIXI) {
-    global.PIXI = {};
-}
-global.PIXI.FlumpLibrary = FlumpLibrary;
+var FlumpLibrary_1 = require("./FlumpLibrary");
+module.exports = FlumpLibrary_1.FlumpLibrary;

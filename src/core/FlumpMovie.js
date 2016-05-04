@@ -28,6 +28,7 @@ var FlumpMovie = (function (_super) {
         for (var i = 0; i < length; i++) {
             var layerData = layers[i];
             movieLayers[i] = new MovieLayer_1.MovieLayer(i, this, library, layerData);
+            this.addChild(movieLayers[i]);
         }
         this._movieLayers = movieLayers;
         this.frames = this._movieData.frames;

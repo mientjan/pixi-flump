@@ -51,6 +51,8 @@ export class FlumpMovie extends PIXI.Container implements IPlayable
 		{
 			var layerData = layers[i];
 			movieLayers[i] = new MovieLayer(i, this, library, layerData);
+
+			this.addChild(movieLayers[i])
 		}
 
 		this._movieLayers = movieLayers;
