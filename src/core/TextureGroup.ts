@@ -1,50 +1,53 @@
 import {IHashMap} from "../interface/IHashMap";
 import {TextureGroupAtlas} from "./TextureGroupAtlas";
 import {IAtlas, ITextureGroup} from "../interface/ILibrary";
-import {Texture} from "./Texture";
-import {PixiFlump} from "../PixiFlump";
+import {FlumpLibrary} from "../FlumpLibrary";
+import Texture = PIXI.Texture;
+import {Promise} from "../util/Promise";
+
 export class TextureGroup
 {
-	public static load(flumpLibrary:PixiFlump, json:ITextureGroup):Promise<TextureGroup>
+	public static load(library:FlumpLibrary, json:ITextureGroup):Promise<TextureGroup>
 	{
 		var atlases = json.atlases;
 		var loaders:Array<Promise<any>> = [];
+		
 		for(var i = 0; i < atlases.length; i++)
 		{
 			var atlas:IAtlas = atlases[i];
-			loaders.push(TextureGroupAtlas.load(flumpLibrary, atlas));
+			loaders.push(TextureGroupAtlas.load(library, atlas));
 		}
 
 		return Promise.all(loaders).then((atlases:Array<TextureGroupAtlas>) =>
 		{
-			var flumpTextures:IHashMap<Texture> = {};
+			var result:Array<PIXI.Sprite> = [];
 
 			for(var i = 0; i < atlases.length; i++)
 			{
 				var atlas = atlases[i];
 
-				for(var name in atlas.flumpTextures)
-				{
-					if( atlas.flumpTextures.hasOwnProperty(name)){
-						flumpTextures[name] = atlas.flumpTextures[name];
-					}
-				}
+				// @todo check on duplicate names
+				result = result.concat(atlas.getSprites())
 			}
 
-			return new TextureGroup(atlases, flumpTextures);
+			return new TextureGroup(result);
 		}).catch((err) => {
 			console.warn('could not load textureGroup', err)
 			throw new Error('could not load textureGroup');
 		});
 	}
 
-	public textureGroupAtlases:Array<TextureGroupAtlas>;
-	public textures:IHashMap<Texture>;
+	// public textureGroupAtlases:Array<TextureGroupAtlas>;
+	// public textures:IHashMap<Texture>;
+	public sprites:IHashMap<PIXI.Sprite> = {};
 
-	constructor(flumpTextureGroupAtlases:Array<TextureGroupAtlas>, flumpTextures:IHashMap<Texture>)
+	constructor(sprites:Array<PIXI.Sprite>)
 	{
-		this.textureGroupAtlases = flumpTextureGroupAtlases;
-		this.textures = flumpTextures;
+		for(var i = 0; i < sprites.length; i++)
+		{
+			var sprite = sprites[i];
+			this.sprites[sprite.name] = sprite;
+		}
 	}
 
 

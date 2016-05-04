@@ -11,4 +11,3 @@ var FlumpMtx = (function () {
     return FlumpMtx;
 }());
 exports.FlumpMtx = FlumpMtx;
-//# sourceMappingURL=FlumpMtx.js.map

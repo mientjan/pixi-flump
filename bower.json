@@ -13,7 +13,9 @@
     "inch.json",
     "testem.json"
   ],
-  "dependencies": {},
+  "dependencies": {
+    "promise-polyfill": "^5.0.0"
+  },
   "devDependencies": {
     "pixi.js": "^3.0.11"
   }

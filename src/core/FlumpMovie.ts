@@ -1,34 +1,22 @@
-import {DisplayObject} from '../../display/DisplayObject';
-
-import {IHashMap} from '../../../core/interface/IHashMap';
-
-
-import {FlumpLibrary} from '../FlumpLibrary';
-import {FlumpMovieLayer} from './FlumpMovieLayer';
-import {FlumpLabelData} from './FlumpLabelData';
-import {FlumpLabelQueueData} from './FlumpLabelQueueData';
-import {FlumpTexture} from "./FlumpTexture";
-import {AnimationQueue} from '../../../core/util/AnimationQueue';
-
-import {IFlumpMovie} from "./IFlumpMovie";
-import {DisplayType} from "../../enum/DisplayType";
-import {QueueItem} from "../../../core/util/QueueItem";
-import {IPlayable} from "../../../core/interface/IPlayable";
+import {AnimationQueue} from "../util/AnimationQueue";
+import {IHashMap} from "../interface/IHashMap";
+import {FlumpLibrary} from "../FlumpLibrary";
+import {QueueItem} from "../util/QueueItem";
+import {MovieData} from "../data/MovieData";
+import {IPlayable} from "../interface/IPlayable";
+import {MovieLayer} from "../core/MovieLayer";
+import {LabelData} from "../data/LabelData";
 
 /**
  * @author Mient-jan Stelling
  */
-export class FlumpMovie extends DisplayObject implements IPlayable
+export class FlumpMovie extends PIXI.Container implements IPlayable
 {
-	public type:DisplayType = DisplayType.FLUMPSYMBOL;
+	private _library:FlumpLibrary;
+	private _movieData:MovieData;
+	private _movieLayers:Array<MovieLayer>;
 
-	public flumpLibrary:FlumpLibrary;
-	public flumpMovieData;
-	public flumpMovieLayers:Array<FlumpMovieLayer>;
-
-	private _labels:IHashMap<FlumpLabelData> = {};
-	private _labelQueue:Array<FlumpLabelQueueData> = [];
-	private _label:FlumpLabelQueueData = null;
+	private _labels:IHashMap<LabelData> = {};
 
 	protected _queue:AnimationQueue = null;
 
@@ -47,26 +35,26 @@ export class FlumpMovie extends DisplayObject implements IPlayable
 
 	// ToDo: add features like playOnce, playTo, goTo, loop, stop, isPlaying, label events, ...
 
-	constructor( flumpLibrary:FlumpLibrary, name:string, width:any = 1, height:any = 1, x:any = 0, y:any = 0, regX:any = 0, regY:any = 0)
+	constructor( library:FlumpLibrary, name:string)
 	{
-		super(width, height, x, y, regX, regY);
+		super();
 
 		this.name = name;
-		this.flumpLibrary = flumpLibrary;
-		this.flumpMovieData = flumpLibrary.getFlumpMovieData(name);
+		this._library = library;
+		this._movieData = library.getMovieData(name);
 
-		var layers = this.flumpMovieData.flumpLayerDatas;
+		var layers = this._movieData.layerData;
 		var length = layers.length;
 		var movieLayers = new Array(length);
 
 		for(var i = 0; i < length; i++)
 		{
 			var layerData = layers[i];
-			movieLayers[i] = new FlumpMovieLayer(this, layerData);
+			movieLayers[i] = new MovieLayer(i, this, library, layerData);
 		}
 
-		this.flumpMovieLayers = movieLayers;
-		this.frames = this.flumpMovieData.frames;
+		this._movieLayers = movieLayers;
+		this.frames = this._movieData.frames;
 		this._frameCallback = new Array(this.frames);
 
 		for(var i = 0; i < this.frames; i++)
@@ -74,8 +62,18 @@ export class FlumpMovie extends DisplayObject implements IPlayable
 			this._frameCallback[i] = null;
 		}
 
-		this.fps = flumpLibrary.frameRate;
+		this.fps = library.frameRate;
 		this.getQueue();
+	}
+
+	// public getLibrary():FlumpLibrary
+	// {
+	// 	return this._library;
+	// }
+
+	public setLabel(name:string, data:LabelData):void
+	{
+		this._labels[name] = data;
 	}
 
 	public getQueue():AnimationQueue
@@ -207,8 +205,7 @@ export class FlumpMovie extends DisplayObject implements IPlayable
 
 	public onTick(delta:number, accumulated:number):void
 	{
-		super.onTick(delta, accumulated);
-
+		var movieLayers = this._movieLayers;
 		delta *= this.speed;
 
 		if(this.paused == false)
@@ -217,9 +214,9 @@ export class FlumpMovie extends DisplayObject implements IPlayable
 			var frame = this.frame;
 			var newFrame = this._queue.getFrame();
 
-			for(var i = 0; i < this.flumpMovieLayers.length; i++)
+			for(var i = 0; i < movieLayers.length; i++)
 			{
-				var layer = this.flumpMovieLayers[i];
+				var layer = movieLayers[i];
 				layer.onTick(delta, accumulated);
 				layer.setFrame(newFrame);
 			}
@@ -236,7 +233,7 @@ export class FlumpMovie extends DisplayObject implements IPlayable
 	 */
 	public getSymbol(name:string):FlumpMovie
 	{
-		var layers = this.flumpMovieLayers;
+		var layers = this._movieLayers;
 		for(var i = 0; i < layers.length; i++)
 		{
 			var layer = layers[i];
@@ -251,9 +248,9 @@ export class FlumpMovie extends DisplayObject implements IPlayable
 		return null;
 	}
 
-	public replaceSymbol(name:string, symbol:IFlumpMovie ):boolean
+	public replaceSymbol(name:string, symbol:FlumpMovie|PIXI.Sprite ):boolean
 	{
-		var layers = this.flumpMovieLayers;
+		var layers = this._movieLayers;
 		for(var i = 0; i < layers.length; i++)
 		{
 			var layer = layers[i];
@@ -299,34 +296,34 @@ export class FlumpMovie extends DisplayObject implements IPlayable
 
 		return this;
 	}
-/*
-	public setFrame(value:number):FlumpMovie
+	/*
+	 public setFrame(value:number):FlumpMovie
+	 {
+	 //console.log('setFrame', value, this.name);
+
+	 var layers = this._movieLayers;
+	 var length = layers.length;
+
+	 //( this.frames / library.frameRate ) * 1000;
+
+	 for(var i = 0; i < length; i++)
+	 {
+	 var layer = layers[i];
+	 if (layer.enabled)
+	 {
+	 layer.reset();
+	 layer.onTick( (value / this.frames) * this.duration );
+	 layer.setFrame(value);
+	 }
+	 }
+
+	 return this;
+	 }*/
+
+	/*public draw(ctx:CanvasRenderingContext2D, ignoreCache?:boolean):boolean
 	{
-		//console.log('setFrame', value, this.name);
 
-		var layers = this.flumpMovieLayers;
-		var length = layers.length;
-
-		//( this.frames / flumpLibrary.frameRate ) * 1000;
-
-		for(var i = 0; i < length; i++)
-		{
-			var layer = layers[i];
-			if (layer.enabled)
-			{
-				layer.reset();
-				layer.onTick( (value / this.frames) * this.duration );
-				layer.setFrame(value);
-			}
-		}
-
-		return this;
-	}*/
-
-	public draw(ctx:CanvasRenderingContext2D, ignoreCache?:boolean):boolean
-	{
-
-		var layers = this.flumpMovieLayers;
+		var layers = this._movieLayers;
 		var length = layers.length;
 		var ga = ctx.globalAlpha;
 
@@ -355,16 +352,61 @@ export class FlumpMovie extends DisplayObject implements IPlayable
 		}
 
 		return true;
-	}
+	}*/
+
+
+
+	// public draw(ctx:CanvasRenderingContext2D, ignoreCache?:boolean):boolean
+	// {
+	//
+	// 	var layers = this._movieLayers;
+	// 	var length = layers.length;
+	// 	var ga = ctx.globalAlpha;
+	//
+	// 	for(var i = 0; i < length; i++)
+	// 	{
+	// 		var layer:FlumpMovieLayer = layers[i];
+	//
+	// 		if(layer.visible && layer.enabled)
+	// 		{
+	// 			ctx.save();
+	// 			//layer.updateContext(ctx)
+	// 			ctx.globalAlpha = ga * layer.alpha;
+	//
+	// 			ctx.transform(
+	// 				layer._storedMtx.a,
+	// 				layer._storedMtx.b,
+	// 				layer._storedMtx.c,
+	// 				layer._storedMtx.d,
+	// 				layer._storedMtx.tx,// + (this.x),
+	// 				layer._storedMtx.ty// + (this.y)
+	// 			);
+	//
+	// 			layer.draw(ctx);
+	// 			ctx.restore();
+	// 		}
+	// 	}
+	//
+	// 	return true;
+	// }
+
+	// public renderWebGL(renderer: PIXI.WebGLRenderer): void
+	// {
+	//
+	// }
+	//
+	// public renderCanvas(renderer: PIXI.CanvasRenderer): void
+	// {
+	//
+	// }
 
 	public reset():void
 	{
-		for(var i = 0; i < this.flumpMovieLayers.length; i++)
+		var layers = this._movieLayers;
+		for(var i = 0; i < layers.length; i++)
 		{
-			var layer = this.flumpMovieLayers[i];
+			var layer = layers[i];
 			layer.reset();
 		}
 	}
 }
-
-

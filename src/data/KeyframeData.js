@@ -60,4 +60,3 @@ var KeyframeData = (function () {
     return KeyframeData;
 }());
 exports.KeyframeData = KeyframeData;
-//# sourceMappingURL=KeyframeData.js.map

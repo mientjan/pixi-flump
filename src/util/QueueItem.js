@@ -31,4 +31,3 @@ var QueueItem = (function () {
     return QueueItem;
 }());
 exports.QueueItem = QueueItem;
-//# sourceMappingURL=QueueItem.js.map

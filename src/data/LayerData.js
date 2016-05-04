@@ -34,4 +34,3 @@ var LayerData = (function () {
     return LayerData;
 }());
 exports.LayerData = LayerData;
-//# sourceMappingURL=LayerData.js.map

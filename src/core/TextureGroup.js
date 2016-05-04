@@ -1,28 +1,28 @@
 "use strict";
 var TextureGroupAtlas_1 = require("./TextureGroupAtlas");
+var Promise_1 = require("../util/Promise");
 var TextureGroup = (function () {
-    function TextureGroup(flumpTextureGroupAtlases, flumpTextures) {
-        this.textureGroupAtlases = flumpTextureGroupAtlases;
-        this.textures = flumpTextures;
+    function TextureGroup(sprites) {
+        this.sprites = {};
+        for (var i = 0; i < sprites.length; i++) {
+            var sprite = sprites[i];
+            this.sprites[sprite.name] = sprite;
+        }
     }
-    TextureGroup.load = function (flumpLibrary, json) {
+    TextureGroup.load = function (library, json) {
         var atlases = json.atlases;
         var loaders = [];
         for (var i = 0; i < atlases.length; i++) {
             var atlas = atlases[i];
-            loaders.push(TextureGroupAtlas_1.TextureGroupAtlas.load(flumpLibrary, atlas));
+            loaders.push(TextureGroupAtlas_1.TextureGroupAtlas.load(library, atlas));
         }
-        return Promise.all(loaders).then(function (atlases) {
-            var flumpTextures = {};
+        return Promise_1.Promise.all(loaders).then(function (atlases) {
+            var result = [];
             for (var i = 0; i < atlases.length; i++) {
                 var atlas = atlases[i];
-                for (var name in atlas.flumpTextures) {
-                    if (atlas.flumpTextures.hasOwnProperty(name)) {
-                        flumpTextures[name] = atlas.flumpTextures[name];
-                    }
-                }
+                result = result.concat(atlas.getSprites());
             }
-            return new TextureGroup(atlases, flumpTextures);
+            return new TextureGroup(result);
         }).catch(function (err) {
             console.warn('could not load textureGroup', err);
             throw new Error('could not load textureGroup');
@@ -31,4 +31,3 @@ var TextureGroup = (function () {
     return TextureGroup;
 }());
 exports.TextureGroup = TextureGroup;
-//# sourceMappingURL=TextureGroup.js.map

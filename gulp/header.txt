@@ -1,0 +1,10 @@
+/**
+ * @license
+ * pixi-flump.js - v<%= pkg.version %>
+ * Compiled <%= date %>
+ *
+ * pixi-flump.js is licensed under the MIT License.
+ * http://www.opensource.org/licenses/mit-license.php
+ *
+<% licenseText.split('\n').forEach(function (line) { %> * <%= line %><% }); %>
+ */

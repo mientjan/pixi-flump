@@ -1,51 +1,50 @@
-import {DisplayObject} from '../../display/DisplayObject';
-import {FlumpLibrary} from '../FlumpLibrary';
-import {FlumpLayerData} from './FlumpLayerData';
-import {FlumpKeyframeData} from './FlumpKeyframeData';
-import {FlumpTexture} from './FlumpTexture';
-import {FlumpMovie} from './FlumpMovie';
-import {FlumpMtx} from './FlumpMtx';
-import {FlumpLabelData} from './FlumpLabelData';
-import {IHashMap} from "../../../core/interface/IHashMap";
-import {IFlumpMovie} from "./IFlumpMovie";
-import {DisplayType} from "../../enum/DisplayType";
 
-export class FlumpMovieLayer extends DisplayObject
+import {IHashMap} from "../interface/IHashMap";
+import {FlumpMtx} from "./FlumpMtx";
+import {FlumpMovie} from "./FlumpMovie";
+import {FlumpLibrary} from "../FlumpLibrary";
+import {LayerData} from "../data/LayerData";
+import {LabelData} from "../data/LabelData";
+import {KeyframeData} from "../data/KeyframeData";
+
+export class MovieLayer
 {
 	public name:string = '';
-	private _frame:number = 0;
-	public flumpLayerData:FlumpLayerData;
 
-	protected _symbol:IFlumpMovie;
-	public _symbols:IHashMap<IFlumpMovie> = {};
-	protected _symbolName:any = null;
+	private _frame:number = 0;
+
+	protected _index:number;
+	protected _movie:FlumpMovie;
+	protected _layerData:LayerData;
+	protected _symbol:FlumpMovie|PIXI.Sprite;
+	protected _symbols:IHashMap<FlumpMovie|PIXI.Sprite> = {};
 
 	// disable layer from code
 	public enabled:boolean = true;
 
 	public _storedMtx = new FlumpMtx(1, 0, 0, 1, 0, 0);
 
-	constructor(flumpMove:FlumpMovie, flumpLayerData:FlumpLayerData)
+	constructor(index:number, movie:FlumpMovie, library:FlumpLibrary, layerData:LayerData)
 	{
-		super();
+		var keyframeData = layerData.keyframeData;
 
-		this.flumpLayerData = flumpLayerData;
-		this.name = flumpLayerData.name;
+		this._index = index;
+		this._movie = movie;
+		this._layerData = layerData;
+		this.name = layerData.name;
 
-		var flumpLibrary = flumpMove.flumpLibrary;
-
-		for(var i = 0; i < flumpLayerData.flumpKeyframeDatas.length; i++)
+		for(var i = 0; i < keyframeData.length; i++)
 		{
-			var keyframe = flumpLayerData.flumpKeyframeDatas[i];
+			var keyframe = keyframeData[i];
 
 			if(keyframe.label)
 			{
-				flumpMove['_labels'][keyframe.label] = new FlumpLabelData(keyframe.label, keyframe.index, keyframe.duration);
+				movie.setLabel(keyframe.label, new LabelData(keyframe.label, keyframe.index, keyframe.duration));
 			}
 
 			if(( ( <any> keyframe.ref) != -1 && ( <any> keyframe.ref) != null) && ( keyframe.ref in this._symbols ) == false)
 			{
-				this._symbols[keyframe.ref] = flumpMove.flumpLibrary.createSymbol(keyframe.ref, false);
+				this._symbols[keyframe.ref] = library.createSymbol(keyframe.ref, false);
 
 			}
 		}
@@ -81,7 +80,7 @@ export class FlumpMovieLayer extends DisplayObject
 		return null;
 	}
 
-	public replaceSymbol(name:string, item:IFlumpMovie):boolean
+	public replaceSymbol(name:string, item:FlumpMovie|PIXI.Sprite):boolean
 	{
 		var symbols = this._symbols;
 		for(var val in symbols)
@@ -90,7 +89,7 @@ export class FlumpMovieLayer extends DisplayObject
 
 			if(symbol.name == name)
 			{
-				this._symbols[val] = <IFlumpMovie> item;
+				this._symbols[val] = <FlumpMovie|PIXI.Sprite> item;
 				return true;
 			}
 			else if(symbol instanceof FlumpMovie && symbol.replaceSymbol(name, item))
@@ -105,7 +104,7 @@ export class FlumpMovieLayer extends DisplayObject
 
 	public onTick(delta:number, accumulated:number):void
 	{
-		if(this._symbol != null && !(this._symbol instanceof FlumpTexture))
+		if(this._symbol != null && (this._symbol instanceof FlumpMovie))
 		{
 			( <FlumpMovie> this._symbol ).onTick(delta, accumulated);
 		}
@@ -113,7 +112,7 @@ export class FlumpMovieLayer extends DisplayObject
 
 	public setFrame(frame:number):boolean
 	{
-		var keyframe:FlumpKeyframeData = this.flumpLayerData.getKeyframeForFrame(Math.floor(frame));
+		var keyframe:KeyframeData = this._layerData.getKeyframeForFrame(Math.floor(frame));
 
 		if(( <any> keyframe.ref ) != -1 && ( <any> keyframe.ref ) != null)
 		{
@@ -121,13 +120,15 @@ export class FlumpMovieLayer extends DisplayObject
 			{
 				this._symbol = this._symbols[keyframe.ref];
 
-				if(this._symbol.type == DisplayType.FLUMPSYMBOL)
+				if(this._symbol instanceof FlumpMovie)
 				{
-					this._symbol.reset();
+					( <FlumpMovie> this._symbol).reset();
 				}
+
+				this._movie.addChildAt(this._symbol, this._index);
 			}
 
-			this.setKeyframeData(keyframe, frame);
+			this.setKeyframeData(this._symbol, keyframe, frame);
 		}
 		else
 		{
@@ -137,7 +138,7 @@ export class FlumpMovieLayer extends DisplayObject
 		return true;
 	}
 
-	public setKeyframeData(keyframe, frame)
+	public setKeyframeData(symbol:PIXI.DisplayObject, keyframe:KeyframeData, frame:number)
 	{
 
 		var sinX = 0.0;
@@ -159,9 +160,9 @@ export class FlumpMovieLayer extends DisplayObject
 
 		if(keyframe.index < frame && keyframe.tweened)
 		{
-			nextKeyframe = this.flumpLayerData.getKeyframeAfter(keyframe);
+			nextKeyframe = this._layerData.getKeyframeAfter(keyframe);
 
-			if(nextKeyframe instanceof FlumpKeyframeData)
+			if(nextKeyframe instanceof KeyframeData)
 			{
 				interped = (frame - keyframe.index) / keyframe.duration;
 				ease = keyframe.ease;
@@ -192,53 +193,63 @@ export class FlumpMovieLayer extends DisplayObject
 			}
 		}
 
-		if(skewX != 0)
-		{
-			sinX = Math.sin(skewX);
-			cosX = Math.cos(skewX);
-		}
+		symbol.setTransform(x, y, scaleX, scaleY, 0, skewX, skewY, pivotX, pivotY)
+		symbol.visible = keyframe.visible;
+		symbol.alpha = alpha;
 
-		if(skewY != 0)
-		{
-			sinY = Math.sin(skewY);
-			cosY = Math.cos(skewY);
-		}
+		// if(skewX != 0)
+		// {
+		// 	sinX = Math.sin(skewX);
+		// 	cosX = Math.cos(skewX);
+		// }
+		//
+		// if(skewY != 0)
+		// {
+		// 	sinY = Math.sin(skewY);
+		// 	cosY = Math.cos(skewY);
+		// }
+		//
+		// symbol.localTransform
+		//
+		// this._storedMtx.a = scaleX * cosY;
+		// this._storedMtx.b = scaleX * sinY;
+		// this._storedMtx.c = -scaleY * sinX;
+		// this._storedMtx.d = scaleY * cosX;
+		//
+		// this._storedMtx.tx = x - (pivotX * this._storedMtx.a + pivotY * this._storedMtx.c);
+		// this._storedMtx.ty = y - (pivotX * this._storedMtx.b + pivotY * this._storedMtx.d);
 
-		this._storedMtx.a = scaleX * cosY;
-		this._storedMtx.b = scaleX * sinY;
-		this._storedMtx.c = -scaleY * sinX;
-		this._storedMtx.d = scaleY * cosX;
 
-		this._storedMtx.tx = x - (pivotX * this._storedMtx.a + pivotY * this._storedMtx.c);
-		this._storedMtx.ty = y - (pivotX * this._storedMtx.b + pivotY * this._storedMtx.d);
-
-
-		this.alpha = alpha;
-		this.visible = keyframe.visible;
+		// this.alpha = alpha;
+		// this.visible = keyframe.visible;
 
 		this._frame = frame;
 	}
 
 	public reset()
 	{
-		if(this._symbol)
+		if(this._symbol instanceof FlumpMovie)
 		{
-			this._symbol.reset();
+			( <FlumpMovie> this._symbol).reset();
 		}
 
-		for(var symbol in this._symbols)
+		for(var name in this._symbols)
 		{
-			this._symbols[symbol].reset();
+			var symbol = <FlumpMovie> this._symbols[name];
+			if(symbol instanceof FlumpMovie)
+			{
+				symbol.reset();
+			}
 		}
 	}
 
-	public draw(ctx:CanvasRenderingContext2D, ignoreCache?:boolean):boolean
-	{
-		if(this._symbol != null && this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0)
-		{
-			this._symbol.draw(ctx);
-		}
-		return true;
-	}
+	// public draw(ctx:CanvasRenderingContext2D, ignoreCache?:boolean):boolean
+	// {
+	// 	if(this._symbol != null && this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0)
+	// 	{
+	// 		this._symbol.draw(ctx);
+	// 	}
+	// 	return true;
+	// }
 }
 

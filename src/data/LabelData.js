@@ -8,4 +8,3 @@ var LabelData = (function () {
     return LabelData;
 }());
 exports.LabelData = LabelData;
-//# sourceMappingURL=LabelData.js.map

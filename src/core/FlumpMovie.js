@@ -4,57 +4,43 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var DisplayObject_1 = require('../../display/DisplayObject');
-var FlumpMovieLayer_1 = require('./FlumpMovieLayer');
-var AnimationQueue_1 = require('../../../core/util/AnimationQueue');
-var DisplayType_1 = require("../../enum/DisplayType");
-var QueueItem_1 = require("../../../core/util/QueueItem");
-/**
- * @author Mient-jan Stelling
- */
+var AnimationQueue_1 = require("../util/AnimationQueue");
+var QueueItem_1 = require("../util/QueueItem");
+var MovieLayer_1 = require("../core/MovieLayer");
 var FlumpMovie = (function (_super) {
     __extends(FlumpMovie, _super);
-    // ToDo: add features like playOnce, playTo, goTo, loop, stop, isPlaying, label events, ...
-    function FlumpMovie(flumpLibrary, name, width, height, x, y, regX, regY) {
-        if (width === void 0) { width = 1; }
-        if (height === void 0) { height = 1; }
-        if (x === void 0) { x = 0; }
-        if (y === void 0) { y = 0; }
-        if (regX === void 0) { regX = 0; }
-        if (regY === void 0) { regY = 0; }
-        _super.call(this, width, height, x, y, regX, regY);
-        this.type = DisplayType_1.DisplayType.FLUMPSYMBOL;
+    function FlumpMovie(library, name) {
+        _super.call(this);
         this._labels = {};
-        this._labelQueue = [];
-        this._label = null;
         this._queue = null;
         this.hasFrameCallbacks = false;
         this.paused = true;
-        //public time:number = 0.0;
-        //public duration = 0.0;
         this.frame = 0;
         this.frames = 0;
         this.speed = 1;
         this.fps = 1;
         this.name = name;
-        this.flumpLibrary = flumpLibrary;
-        this.flumpMovieData = flumpLibrary.getFlumpMovieData(name);
-        var layers = this.flumpMovieData.flumpLayerDatas;
+        this._library = library;
+        this._movieData = library.getMovieData(name);
+        var layers = this._movieData.layerData;
         var length = layers.length;
         var movieLayers = new Array(length);
         for (var i = 0; i < length; i++) {
             var layerData = layers[i];
-            movieLayers[i] = new FlumpMovieLayer_1.FlumpMovieLayer(this, layerData);
+            movieLayers[i] = new MovieLayer_1.MovieLayer(i, this, library, layerData);
         }
-        this.flumpMovieLayers = movieLayers;
-        this.frames = this.flumpMovieData.frames;
+        this._movieLayers = movieLayers;
+        this.frames = this._movieData.frames;
         this._frameCallback = new Array(this.frames);
         for (var i = 0; i < this.frames; i++) {
             this._frameCallback[i] = null;
         }
-        this.fps = flumpLibrary.frameRate;
+        this.fps = library.frameRate;
         this.getQueue();
     }
+    FlumpMovie.prototype.setLabel = function (name, data) {
+        this._labels[name] = data;
+    };
     FlumpMovie.prototype.getQueue = function () {
         if (!this._queue) {
             this._queue = new AnimationQueue_1.AnimationQueue(this.fps, 1000);
@@ -146,27 +132,22 @@ var FlumpMovie = (function (_super) {
         return this;
     };
     FlumpMovie.prototype.onTick = function (delta, accumulated) {
-        _super.prototype.onTick.call(this, delta, accumulated);
+        var movieLayers = this._movieLayers;
         delta *= this.speed;
         if (this.paused == false) {
             this._queue.onTick(delta);
             var frame = this.frame;
             var newFrame = this._queue.getFrame();
-            for (var i = 0; i < this.flumpMovieLayers.length; i++) {
-                var layer = this.flumpMovieLayers[i];
+            for (var i = 0; i < movieLayers.length; i++) {
+                var layer = movieLayers[i];
                 layer.onTick(delta, accumulated);
                 layer.setFrame(newFrame);
             }
             this.frame = newFrame;
         }
     };
-    /**
-     *
-     * @param name
-     * @returns {any}
-     */
     FlumpMovie.prototype.getSymbol = function (name) {
-        var layers = this.flumpMovieLayers;
+        var layers = this._movieLayers;
         for (var i = 0; i < layers.length; i++) {
             var layer = layers[i];
             var symbol = layer.getSymbol(name);
@@ -177,7 +158,7 @@ var FlumpMovie = (function (_super) {
         return null;
     };
     FlumpMovie.prototype.replaceSymbol = function (name, symbol) {
-        var layers = this.flumpMovieLayers;
+        var layers = this._movieLayers;
         for (var i = 0; i < layers.length; i++) {
             var layer = layers[i];
             if (layer.replaceSymbol(name, symbol)) {
@@ -208,55 +189,13 @@ var FlumpMovie = (function (_super) {
         }
         return this;
     };
-    /*
-        public setFrame(value:number):FlumpMovie
-        {
-            //console.log('setFrame', value, this.name);
-    
-            var layers = this.flumpMovieLayers;
-            var length = layers.length;
-    
-            //( this.frames / flumpLibrary.frameRate ) * 1000;
-    
-            for(var i = 0; i < length; i++)
-            {
-                var layer = layers[i];
-                if (layer.enabled)
-                {
-                    layer.reset();
-                    layer.onTick( (value / this.frames) * this.duration );
-                    layer.setFrame(value);
-                }
-            }
-    
-            return this;
-        }*/
-    FlumpMovie.prototype.draw = function (ctx, ignoreCache) {
-        var layers = this.flumpMovieLayers;
-        var length = layers.length;
-        var ga = ctx.globalAlpha;
-        for (var i = 0; i < length; i++) {
-            var layer = layers[i];
-            if (layer.visible && layer.enabled) {
-                ctx.save();
-                //layer.updateContext(ctx)
-                ctx.globalAlpha = ga * layer.alpha;
-                ctx.transform(layer._storedMtx.a, layer._storedMtx.b, layer._storedMtx.c, layer._storedMtx.d, layer._storedMtx.tx, // + (this.x),
-                layer._storedMtx.ty // + (this.y)
-                );
-                layer.draw(ctx);
-                ctx.restore();
-            }
-        }
-        return true;
-    };
     FlumpMovie.prototype.reset = function () {
-        for (var i = 0; i < this.flumpMovieLayers.length; i++) {
-            var layer = this.flumpMovieLayers[i];
+        var layers = this._movieLayers;
+        for (var i = 0; i < layers.length; i++) {
+            var layer = layers[i];
             layer.reset();
         }
     };
     return FlumpMovie;
-}(DisplayObject_1.DisplayObject));
+}(PIXI.Container));
 exports.FlumpMovie = FlumpMovie;
-//# sourceMappingURL=FlumpMovie.js.map
