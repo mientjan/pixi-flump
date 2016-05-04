@@ -1,22 +1,28 @@
 {
   "name": "pixi-flump",
-  "main": "bin/pixi-flump.js",
+  "description": "Flump library for pixi.js",
+  "main": "./bin/pixi-flump.min.js",
+  "authors": [
+    "Mient-jan Stelling"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "pixi",
+    "flump"
+  ],
+  "homepage": "https://github.com/mientjan/pixi-flump",
   "ignore": [
     "**/.*",
-    "docs",
-    "gulp",
     "node_modules",
     "bower_components",
     "test",
-    "bower.json",
-    "gulpfile.js",
-    "inch.json",
-    "testem.json"
+    "gulp",
+    "tsconfig.json",
+    "typings.json",
+    "tests"
   ],
   "dependencies": {
-    "promise-polyfill": "^5.0.0"
-  },
-  "devDependencies": {
+    "promise-polyfill": "^5.0.0",
     "pixi.js": "^3.0.11"
   }
 }
