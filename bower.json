@@ -1,7 +1,7 @@
 {
   "name": "pixi-flump",
   "description": "Flump library for pixi.js",
-  "main": "./bin/pixi-flump.min.js",
+  "main": "./bin/pixi-flump.js",
   "authors": [
     "Mient-jan Stelling"
   ],
