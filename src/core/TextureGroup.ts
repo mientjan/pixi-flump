@@ -4,6 +4,7 @@ import {IAtlas, ITextureGroup} from "../interface/ILibrary";
 import {FlumpLibrary} from "../FlumpLibrary";
 import Texture = PIXI.Texture;
 import {Promise} from "../util/Promise";
+import Point = PIXI.Point;
 
 export class TextureGroup
 {
@@ -20,17 +21,23 @@ export class TextureGroup
 
 		return Promise.all(loaders).then((atlases:Array<TextureGroupAtlas>) =>
 		{
-			var result:Array<PIXI.Sprite> = [];
+			var names:Array<string> = [];
+			var textures:Array<PIXI.Texture> = [];
+			var ancors:Array<PIXI.Point> = [];
 
 			for(var i = 0; i < atlases.length; i++)
 			{
 				var atlas = atlases[i];
 
 				// @todo check on duplicate names
-				result = result.concat(atlas.getSprites())
+				names = names.concat(atlas.getNames())
+				textures = textures.concat(atlas.getTextures())
+				ancors = ancors.concat(atlas.getAnchors())
+
+				atlas.destruct();
 			}
 
-			return new TextureGroup(result);
+			return new TextureGroup(names, textures, ancors);
 		}).catch((err) => {
 			console.warn('could not load textureGroup', err)
 			throw new Error('could not load textureGroup');
@@ -39,17 +46,31 @@ export class TextureGroup
 
 	// public textureGroupAtlases:Array<TextureGroupAtlas>;
 	// public textures:IHashMap<Texture>;
-	public sprites:IHashMap<PIXI.Sprite> = {};
+	protected _names:Array<string> = [];
+	protected _textures:Array<PIXI.Texture> = [];
+	protected _ancors:Array<Point> = [];
 
-	constructor(sprites:Array<PIXI.Sprite>)
+	constructor(names:Array<string>, textures:Array<PIXI.Texture>, ancors:Array<Point>)
 	{
-		for(var i = 0; i < sprites.length; i++)
-		{
-			var sprite = sprites[i];
-			this.sprites[sprite.name] = sprite;
-		}
+		this._names = names;
+		this._textures = textures;
+		this._ancors = ancors;
 	}
 
+	public hasSprite(name:string):boolean
+	{
+		return this._names.indexOf(name) > -1;
+	}
 
+	public createSprite(name:string):PIXI.Sprite
+	{
+		var index = this._names.indexOf(name);
+
+		var sprite = new PIXI.Sprite(this._textures[index]);
+		sprite.anchor.set(this._ancors[index].x, this._ancors[index].y);
+		sprite.name = name;
+
+		return sprite;
+	}
 }
 

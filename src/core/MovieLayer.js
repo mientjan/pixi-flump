@@ -4,7 +4,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var FlumpMtx_1 = require("./FlumpMtx");
 var FlumpMovie_1 = require("./FlumpMovie");
 var LabelData_1 = require("../data/LabelData");
 var KeyframeData_1 = require("../data/KeyframeData");
@@ -16,7 +15,6 @@ var MovieLayer = (function (_super) {
         this._frame = 0;
         this._symbols = {};
         this.enabled = true;
-        this._storedMtx = new FlumpMtx_1.FlumpMtx(1, 0, 0, 1, 0, 0);
         var keyframeData = layerData.keyframeData;
         this._index = index;
         this._movie = movie;
@@ -132,9 +130,23 @@ var MovieLayer = (function (_super) {
                 alpha = alpha + (nextKeyframe.alpha - alpha) * interped;
             }
         }
-        symbol.setTransform(x, y, scaleX, scaleY, 0, skewX, skewY, pivotX, pivotY);
-        symbol.visible = keyframe.visible;
-        symbol.alpha = alpha;
+        if (skewX != 0) {
+            sinX = Math.sin(skewX);
+            cosX = Math.cos(skewX);
+        }
+        if (skewY != 0) {
+            sinY = Math.sin(skewY);
+            cosY = Math.cos(skewY);
+        }
+        this._symbol.position.set(x, y);
+        this._symbol.scale.set(scaleX, scaleY);
+        if (!(this._symbol instanceof PIXI.Sprite)) {
+            this._symbol['pivot'].x = pivotX;
+            this._symbol['pivot'].y = pivotY;
+        }
+        this._symbol['skew'].set(skewX, skewY);
+        this.alpha = alpha;
+        this.visible = keyframe.visible;
         this._frame = frame;
     };
     MovieLayer.prototype.reset = function () {

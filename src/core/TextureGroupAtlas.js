@@ -3,10 +3,22 @@ var Promise_1 = require("../util/Promise");
 var Texture = PIXI.Texture;
 var BaseTexture = PIXI.BaseTexture;
 var Rectangle = PIXI.Rectangle;
+var Point = PIXI.Point;
 var TextureGroupAtlas = (function () {
     function TextureGroupAtlas(renderTexture, json) {
-        this._renderTexture = new BaseTexture(renderTexture);
+        this._names = [];
+        this._textures = [];
+        this._anchors = [];
+        this._baseTexture = new BaseTexture(renderTexture);
         this._atlas = json;
+        var atlasTextures = this._atlas.textures;
+        var baseTexture = this._baseTexture;
+        for (var i = 0; i < atlasTextures.length; i++) {
+            var atlasTexture = atlasTextures[i];
+            this._names.push(atlasTexture.symbol);
+            this._textures.push(new Texture(baseTexture, new Rectangle(atlasTexture.rect[0], atlasTexture.rect[1], atlasTexture.rect[2], atlasTexture.rect[3])));
+            this._anchors.push(new Point(atlasTexture.origin[0] / atlasTexture.rect[2], atlasTexture.origin[1] / atlasTexture.rect[3]));
+        }
     }
     TextureGroupAtlas.load = function (library, json) {
         var file = json.file;
@@ -22,17 +34,19 @@ var TextureGroupAtlas = (function () {
             img.src = url;
         }).then(function (data) { return new TextureGroupAtlas(data, json); });
     };
-    TextureGroupAtlas.prototype.getSprites = function () {
-        var result = [];
-        var textures = this._atlas.textures;
-        var baseTexture = this._renderTexture;
-        for (var i = 0; i < textures.length; i++) {
-            var texture = textures[i];
-            var sprite = new PIXI.Sprite(new Texture(baseTexture, new Rectangle(texture.rect[0], texture.rect[1], texture.rect[2], texture.rect[3])));
-            sprite.name = texture.symbol;
-            result.push(sprite);
-        }
-        return result;
+    TextureGroupAtlas.prototype.getNames = function () {
+        return this._names;
+    };
+    TextureGroupAtlas.prototype.getTextures = function () {
+        return this._textures;
+    };
+    TextureGroupAtlas.prototype.getAnchors = function () {
+        return this._anchors;
+    };
+    TextureGroupAtlas.prototype.destruct = function () {
+        this._names = null;
+        this._textures = null;
+        this._anchors = null;
     };
     return TextureGroupAtlas;
 }());

@@ -153,11 +153,8 @@ export class FlumpLibrary implements ILoadable<FlumpLibrary>
 	{
 		for(var i = 0; i < this.textureGroups.length; i++)
 		{
-			var textures = this.textureGroups[i].sprites;
-
-			if(name in textures)
-			{
-				return textures[name];
+			if(this.textureGroups[i].hasSprite(name)){
+				return this.textureGroups[i].createSprite(name);
 			}
 		}
 

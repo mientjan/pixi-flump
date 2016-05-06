@@ -95,9 +95,8 @@ var FlumpLibrary = (function () {
     FlumpLibrary.prototype.createSymbol = function (name, paused) {
         if (paused === void 0) { paused = false; }
         for (var i = 0; i < this.textureGroups.length; i++) {
-            var textures = this.textureGroups[i].sprites;
-            if (name in textures) {
-                return textures[name];
+            if (this.textureGroups[i].hasSprite(name)) {
+                return this.textureGroups[i].createSprite(name);
             }
         }
         for (var i = 0; i < this.movieData.length; i++) {

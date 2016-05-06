@@ -1,0 +1,104 @@
+{
+  "movies": [
+    {
+      "layers": [
+        {
+          "keyframes": [
+            {
+              "ref": "cube",
+              "index": 0,
+              "pivot": [
+                21,
+                21
+              ],
+              "duration": 9
+            },
+            {
+              "pivot": [
+                21,
+                21
+              ],
+              "duration": 10,
+              "ref": "cube",
+              "index": 9,
+              "loc": [
+                100,
+                0
+              ],
+              "skew": [
+                1.5708,
+                1.5708
+              ]
+            },
+            {
+              "ref": "cube",
+              "index": 19,
+              "loc": [
+                100,
+                100
+              ],
+              "pivot": [
+                21,
+                21
+              ],
+              "duration": 10
+            },
+            {
+              "loc": [
+                0,
+                100
+              ],
+              "pivot": [
+                21,
+                21
+              ],
+              "duration": 10,
+              "ref": "cube",
+              "index": 29,
+              "alpha": 0
+            },
+            {
+              "ref": "cube",
+              "index": 39,
+              "pivot": [
+                21,
+                21
+              ],
+              "duration": 1
+            }
+          ],
+          "name": "Layer 1"
+        }
+      ],
+      "id": "cubeAnimation"
+    }
+  ],
+  "md5": "18c0ff275b28f5579f1ad1e3a28abea9",
+  "frameRate": 24,
+  "isNamespaced": false,
+  "textureGroups": [
+    {
+      "atlases": [
+        {
+          "file": "atlas0.png",
+          "textures": [
+            {
+              "symbol": "cube",
+              "origin": [
+                21,
+                21
+              ],
+              "rect": [
+                1,
+                1,
+                42,
+                42
+              ]
+            }
+          ]
+        }
+      ],
+      "scaleFactor": 1
+    }
+  ]
+}

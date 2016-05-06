@@ -22,7 +22,7 @@ export class MovieLayer extends PIXI.Container
 	// disable layer from code
 	public enabled:boolean = true;
 
-	public _storedMtx = new FlumpMtx(1, 0, 0, 1, 0, 0);
+	// public _storedMtx = new FlumpMtx(1, 0, 0, 1, 0, 0);
 
 	constructor(index:number, movie:FlumpMovie, library:FlumpLibrary, layerData:LayerData)
 	{
@@ -198,40 +198,63 @@ export class MovieLayer extends PIXI.Container
 			}
 		}
 
-		this.setTransform(x, y, scaleX, scaleY, 0, skewX, skewY, pivotX, pivotY)
-		this.visible = keyframe.visible;
-		this.alpha = alpha;
+		//this.setTransform(x, y, scaleX, scaleY, 0, skewX, skewY, pivotX, pivotY)
 
-		// if(skewX != 0)
-		// {
-		// 	sinX = Math.sin(skewX);
-		// 	cosX = Math.cos(skewX);
-		// }
-		//
-		// if(skewY != 0)
-		// {
-		// 	sinY = Math.sin(skewY);
-		// 	cosY = Math.cos(skewY);
-		// }
+
+		if(skewX != 0)
+		{
+			sinX = Math.sin(skewX);
+			cosX = Math.cos(skewX);
+		}
+
+		if(skewY != 0)
+		{
+			sinY = Math.sin(skewY);
+			cosY = Math.cos(skewY);
+		}
 		//
 		// symbol.localTransform
 		//
-		// this._storedMtx.a = scaleX * cosY;
-		// this._storedMtx.b = scaleX * sinY;
-		// this._storedMtx.c = -scaleY * sinX;
-		// this._storedMtx.d = scaleY * cosX;
+		// this.worldTransform.a = scaleX * cosY;
+		// this.worldTransform.b = scaleX * sinY;
+		// this.worldTransform.c = -scaleY * sinX;
+		// this.worldTransform.d = scaleY * cosX;
 		//
-		// this._storedMtx.tx = x - (pivotX * this._storedMtx.a + pivotY * this._storedMtx.c);
-		// this._storedMtx.ty = y - (pivotX * this._storedMtx.b + pivotY * this._storedMtx.d);
+		// this.worldTransform.tx = x - (pivotX * this.worldTransform.a + pivotY * this.worldTransform.c);
+		// this.worldTransform.ty = y - (pivotX * this.worldTransform.b + pivotY * this.worldTransform.d);
 
+		this._symbol.position.set(x, y);
+		this._symbol.scale.set(scaleX, scaleY);
+		if(!(this._symbol instanceof PIXI.Sprite))
+		{
+			this._symbol['pivot'].x = pivotX;
+			this._symbol['pivot'].y = pivotY;
+		}
+		this._symbol['skew'].set(skewX, skewY);
 
-		// this.alpha = alpha;
+		// console.log(pivotX, pivotY);
+		
+		// console.log(this.worldTransform);
+
+		//
+		// this.setTransform(this._storedMtx.tx, this._storedMtx.ty, this._storedMtx.a, this._storedMtx.d, 0, this._storedMtx.b, this._storedMtx.c, 0, 0)
+		// this.worldTransform.set( this._storedMtx.a, this._storedMtx, this._storedMtx, this._storedMtx.tx, this._storedMtx.ty);
+		// this.setTransform(x, y, scaleX, scaleY, 0, skewX, skewY, 0, 0);
 		// this.visible = keyframe.visible;
+		// this.alpha = alpha;
+
+		this.alpha = alpha;
+		this.visible = keyframe.visible;
 
 		this._frame = frame;
 	}
 
-	public reset()
+	// updateTransform():void
+	// {
+	// 	// super.updateTransform();
+	// }
+
+	public reset():void
 	{
 		if(this._symbol instanceof FlumpMovie)
 		{

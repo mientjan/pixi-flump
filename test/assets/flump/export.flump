@@ -1,0 +1,23 @@
+{
+  "fileVersion": 0,
+  "exports": [
+    {
+      "quality": "best",
+      "prettyPrint": false,
+      "name": "animation-100",
+      "scale": 1,
+      "combine": false,
+      "scaleFactors": [
+        1
+      ],
+      "optimize": "Speed",
+      "format": "JSON",
+      "maxAtlasSize": 1024,
+      "textureBorder": 1,
+      "description": "'animation-100' (JSON, 100%, @1x)",
+      "scaleFactorsString": "1"
+    }
+  ],
+  "exportDir": "",
+  "importDir": ""
+}

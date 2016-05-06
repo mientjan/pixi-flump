@@ -17,15 +17,18 @@ document.body.appendChild(renderer.view);
 // create the root of the scene graph
 var stage = new PIXI.Container();
 
-var fl = new PIXI.FlumpLibrary('../test/assets/flump/animations-100/character');
+var fl = new PIXI.FlumpLibrary('../test/assets/flump/animation-100/character');
 
 
 fl.load().then(function(library){
 
-	for(var i = 0; i < 1000; i++)
+	for(var i = 0; i < 200; i++)
 	{
-
-		var movie = fl.createMovie(names[Math.floor(Math.random()*names.length)]);
+		var name = names[Math.floor(Math.random()*names.length)];
+		var movie = fl.createMovie(name);
+		// console.log(name);
+		
+		// var movie = fl.createMovie('cubeAnimation');
 		movie.position.set(Math.random() * width|0, Math.random() * height|0);
 		movie.play(-1)
 		stage.addChild(movie);
@@ -42,6 +45,7 @@ fl.load().then(function(library){
 		} else {
 			var delta = time - pTime;
 			pTime = time;
+			
 
 			for(var i = 0; i < stage.children.length; i++)
 			{
@@ -54,5 +58,5 @@ fl.load().then(function(library){
 	}
 
 
-}).catch(err => console.log(err));
+}).catch(function(err){console.log(err)});
 

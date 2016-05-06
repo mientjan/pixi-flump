@@ -25,7 +25,7 @@ export class KeyframeData
 
 	constructor(json:IKeyframe|Array<any>)
 	{
-		if(( <Array<any>> json).length != void 0)
+		if(json instanceof Array)
 		{
 			this.fromArray(<Array<any>> json);
 		}
@@ -41,7 +41,7 @@ export class KeyframeData
 			this.scaleX = 'scale' in jsonObject ? jsonObject.scale[0] : 1.0;
 			this.scaleY = 'scale' in jsonObject ? jsonObject.scale[1] : 1.0;
 			this.skewX = 'skew' in jsonObject ? jsonObject.skew[0] : 0.0;
-			this.skewY = 'skew' in jsonObject ? jsonObject.skew[1] : 0.0;
+			this.skewY = 'skew' in jsonObject ? jsonObject.skew[1] : 0.0; 
 			this.pivotX = 'pivot' in jsonObject ? jsonObject.pivot[0] : 0.0;
 			this.pivotY = 'pivot' in jsonObject ? jsonObject.pivot[1] : 0.0;
 			this.visible = 'visible' in jsonObject ? jsonObject.visible : true;
@@ -90,6 +90,21 @@ export class KeyframeData
 			var value = data[i];
 
 			this[name] = value;
+		}
+	}
+
+	public copyNotDefined(keyframe:KeyframeData):void
+	{
+		var order = this.getValueOrder();
+		var data = keyframe.toArray();
+		for(var i = 0; i < data.length; i++)
+		{
+			var name = order[i];
+			var value = data[i];
+
+			if(this[name] == void 0 && value != void 0 ){
+				this[name] = value;
+			}
 		}
 	}
 }

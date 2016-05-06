@@ -7,6 +7,8 @@ import Texture = PIXI.Texture;
 import BaseTexture = PIXI.BaseTexture;
 import Rectangle = PIXI.Rectangle;
 import Sprite = PIXI.Sprite;
+import Point = PIXI.Point;
+import {TextureGroup} from "./TextureGroup";
 
 export class TextureGroupAtlas
 {
@@ -29,30 +31,50 @@ export class TextureGroupAtlas
 		}).then((data:HTMLImageElement) => new TextureGroupAtlas(data, json) );
 	}
 
-	protected _renderTexture:BaseTexture;
+	protected _baseTexture:BaseTexture;
+	protected _names:Array<string> = [];
+	protected _textures:Array<Texture> = [];
+	protected _anchors:Array<Point> = [];
 	protected _atlas:IAtlas;
 
 	constructor( renderTexture:HTMLImageElement, json:IAtlas)
 	{
-		this._renderTexture = new BaseTexture(renderTexture);
+		this._baseTexture = new BaseTexture(renderTexture);
 		this._atlas = json;
+
+		var atlasTextures = this._atlas.textures;
+		var baseTexture = this._baseTexture;
+
+		for(var i = 0; i < atlasTextures.length; i++)
+		{
+			var atlasTexture = atlasTextures[i];
+
+			this._names.push(atlasTexture.symbol);
+			this._textures.push(new Texture(baseTexture, new Rectangle(atlasTexture.rect[0], atlasTexture.rect[1], atlasTexture.rect[2], atlasTexture.rect[3])));
+			this._anchors.push(new Point(atlasTexture.origin[0]/atlasTexture.rect[2], atlasTexture.origin[1]/atlasTexture.rect[3]));
+		}
 	}
 
-	public getSprites():Array<PIXI.Sprite>
+	public getNames():Array<string>
 	{
-		var result:Array<PIXI.Sprite> = [];
-		var textures = this._atlas.textures;
-		var baseTexture = this._renderTexture;
+		return this._names;
+	}
 
-		for(var i = 0; i < textures.length; i++)
-		{
-			var texture = textures[i];
-			var sprite = new PIXI.Sprite(new Texture(baseTexture, new Rectangle(texture.rect[0], texture.rect[1], texture.rect[2], texture.rect[3])));
-			sprite.name = texture.symbol;
-			result.push(sprite);
-		}
+	public getTextures():Array<Texture>
+	{
+		return this._textures;
+	}
 
-		return result;
+	public getAnchors():Array<Point>
+	{
+		return this._anchors;
+	}
+
+	public destruct():void
+	{
+		this._names = null;
+		this._textures = null;
+		this._anchors = null;
 	}
 }
 

@@ -1,7 +1,7 @@
 "use strict";
 var KeyframeData = (function () {
     function KeyframeData(json) {
-        if (json.length != void 0) {
+        if (json instanceof Array) {
             this.fromArray(json);
         }
         else {
@@ -55,6 +55,17 @@ var KeyframeData = (function () {
             var name = order[i];
             var value = data[i];
             this[name] = value;
+        }
+    };
+    KeyframeData.prototype.copyNotDefined = function (keyframe) {
+        var order = this.getValueOrder();
+        var data = keyframe.toArray();
+        for (var i = 0; i < data.length; i++) {
+            var name = order[i];
+            var value = data[i];
+            if (this[name] == void 0 && value != void 0) {
+                this[name] = value;
+            }
         }
     };
     return KeyframeData;
