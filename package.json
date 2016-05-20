@@ -2,7 +2,7 @@
   "name": "pixi-flump",
   "description": "Pixi Flump Library",
   "version": "1.0.0",
-  "main": "./src/index.js",
+  "main": "./bin/pixi-flump.js",
   "directories": {
     "test": "test"
   },
@@ -26,11 +26,10 @@
   "homepage": "https://github.com/mientjan/pixi-flump",
   "devDependencies": {
     "jasmine-core": "2.4.1",
-    "typescript": "^1.8.10",
     "browserify": "^13.0.0",
     "chai": "^3.2.0",
     "del": "^2.2.0",
-    "gulp": "^3.9.0",
+    "gulp": "^3.9.1",
     "gulp-cached": "^1.1.0",
     "gulp-concat": "^2.6.0",
     "gulp-debug": "^2.1.0",
@@ -52,10 +51,7 @@
     "testem": "^0.9.4",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
-    "watchify": "^3.7.0"
-  },
-  "dependencies": {
-    "gulp": "^3.9.1",
+    "watchify": "^3.7.0",
     "gulp-typescript": "^2.13.0",
     "typescript": "^1.8.10"
   }
