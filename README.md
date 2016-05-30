@@ -6,6 +6,10 @@ Pixi Flump Library compatible for pixi v3
 #### Install
 	bower install pixi-flump
 
+or use npm
+	
+    npm install pixi-flump
+
 #### Setup HTML
 Add this to your setup. or where ever you have your pixi and pixi-flump library.
 	<script src="./bower_components/pixi.js/bin/pixi.js"></script>
