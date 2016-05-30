@@ -1,7 +1,7 @@
 {
   "name": "pixi-flump",
   "description": "Pixi Flump Library",
-  "version": "1.0.0",
+  "version": "1.0.1.1",
   "main": "./bin/pixi-flump.js",
   "directories": {
     "test": "test"
