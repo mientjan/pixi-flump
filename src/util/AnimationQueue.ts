@@ -24,9 +24,17 @@ export class AnimationQueue extends Queue
 
 	public onTick(delta:number):void
 	{
-		var time = this._time += delta;
+		let time:number;
 
-		if((this.current != null || this.next() != null) )
+		if( this.current == null && this.hasNext() )
+		{
+			this._time = 0;
+			this.next();
+		}
+
+		time =  this._time += delta;
+
+		if((this.current != null || this.hasNext()) )
 		{
 			var current = this.current;
 			var from = current.from;
@@ -34,9 +42,12 @@ export class AnimationQueue extends Queue
 			var times = current.times;
 			var frame = (duration * time / (duration * this._fpms));
 
-			if(times > -1 && times - (frame / duration) < 0) {
+			if(times > -1 && times - (frame / duration) < 0 )
+			{
 				this.next();
-			} else {
+			}
+			else
+			{
 				this.frame = from + (frame % duration);
 			}
 		}
