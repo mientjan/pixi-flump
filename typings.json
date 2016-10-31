@@ -1,8 +1,0 @@
-{
-  "dependencies": {
-    "es6-promise": "registry:npm/es6-promise#3.0.0+20160211003958"
-  },
-  "ambientDependencies": {
-    "pixi.js": "registry:dt/pixi.js#3.0.9+20160404013751"
-  }
-}

@@ -3,6 +3,13 @@ var Promise_1 = require("./Promise");
 var PromiseUtil = (function () {
     function PromiseUtil() {
     }
+    /**
+     * @static
+     * @method wait
+     * @param {Array<Promise<any>>} list
+     * @param {(progress:number) => any} onProgress
+     * @returns {Promise}
+     */
     PromiseUtil.wait = function (list, onProgress) {
         if (onProgress === void 0) { onProgress = function (progress) { }; }
         return new Promise_1.Promise(function (resolve) {
@@ -19,6 +26,12 @@ var PromiseUtil = (function () {
             }
         });
     };
+    /**
+     * @method waitForLoadable
+     * @param {Array<ILoadable<any>>} list
+     * @param {(progress:number) => any} onProgress
+     * @returns {Promise}
+     */
     PromiseUtil.waitForLoadable = function (list, onProgress) {
         if (onProgress === void 0) { onProgress = function (progress) { }; }
         var count = list.length;

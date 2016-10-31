@@ -9,6 +9,8 @@ import {ILibrary} from "./interface/ILibrary";
 import {MovieData} from "./data/MovieData";
 import {QueueItem} from "./util/QueueItem";
 
+
+
 /**
  * Structure:
  * FlumpLibrary
@@ -18,7 +20,7 @@ export class FlumpLibrary implements ILoadable<FlumpLibrary>
 {
 	public static EVENT_LOAD = 'load';
 
-	public static load(url:string, library?:FlumpLibrary, onProcess?:(process:number) => any ):Promise<FlumpLibrary>
+	public static load(url:string, library:FlumpLibrary, onProcess?:(process:number) => any ):Promise<FlumpLibrary>
 	{
 		var baseDir = url;
 
@@ -61,7 +63,6 @@ export class FlumpLibrary implements ILoadable<FlumpLibrary>
 
 	constructor(basePath?:string)
 	{
-		var a = 0;
 		if(basePath)
 		{
 			this.url = basePath;

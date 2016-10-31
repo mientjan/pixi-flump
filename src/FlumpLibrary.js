@@ -6,6 +6,11 @@ var TextureGroup_1 = require("./core/TextureGroup");
 var FlumpMovie_1 = require("./core/FlumpMovie");
 var MovieData_1 = require("./data/MovieData");
 var QueueItem_1 = require("./util/QueueItem");
+/**
+ * Structure:
+ * FlumpLibrary
+ *  - FlumpMovie
+ */
 var FlumpLibrary = (function () {
     function FlumpLibrary(basePath) {
         this.movieData = [];
@@ -14,7 +19,6 @@ var FlumpLibrary = (function () {
         this.isOptimised = false;
         this._hasLoaded = false;
         this._isLoading = false;
-        var a = 0;
         if (basePath) {
             this.url = basePath;
         }
@@ -113,7 +117,14 @@ var FlumpLibrary = (function () {
     };
     FlumpLibrary.prototype.createMovie = function (id) {
         var name;
+        // if(this.referenceList)
+        // {
+        // 	name = this.referenceList.indexOf(<number> id);
+        // }
+        // else
+        // {
         name = id;
+        // }
         for (var i = 0; i < this.movieData.length; i++) {
             var movieData = this.movieData[i];
             if (movieData.id == name) {

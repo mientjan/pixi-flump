@@ -3,6 +3,8 @@ var TextureGroupAtlas_1 = require("./TextureGroupAtlas");
 var Promise_1 = require("../util/Promise");
 var TextureGroup = (function () {
     function TextureGroup(names, textures, ancors) {
+        // public textureGroupAtlases:Array<TextureGroupAtlas>;
+        // public textures:IHashMap<Texture>;
         this._names = [];
         this._textures = [];
         this._ancors = [];
@@ -23,6 +25,7 @@ var TextureGroup = (function () {
             var ancors = [];
             for (var i = 0; i < atlases.length; i++) {
                 var atlas = atlases[i];
+                // @todo check on duplicate names
                 names = names.concat(atlas.getNames());
                 textures = textures.concat(atlas.getTextures());
                 ancors = ancors.concat(atlas.getAnchors());

@@ -1,18 +1,16 @@
 {
   "compilerOptions": {
     "module": "commonjs",
+    "declaration": true,
     "target": "es3",
     "noImplicitAny": false,
-    "removeComments": true
+    "removeComments": false
   },
   "exclude": [
-    "node_modules",
-    "typings/browser",
-    "typings/browser.d.ts"
+    "node_modules"
   ],
   "files": [
     "src/index.ts",
-    "src/FlumpLibrary.ts",
-    "typings/browser.d.ts"
+    "src/FlumpLibrary.ts"
   ]
 }

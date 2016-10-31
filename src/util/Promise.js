@@ -1,4 +1,5 @@
 "use strict";
+// Use polyfill for setImmediate for performance gains
 var asap = (typeof setImmediate === 'function' && setImmediate) ||
     function (fn) {
         setTimeout(fn, 1);
@@ -6,6 +7,8 @@ var asap = (typeof setImmediate === 'function' && setImmediate) ||
 if (!Function.prototype.bind) {
     Function.prototype.bind = function (oThis) {
         if (typeof this !== 'function') {
+            // closest thing possible to the ECMAScript 5
+            // internal IsCallable function
             throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
         }
         var aArgs = Array.prototype.slice.call(arguments, 1), fToBind = this, fNOP = function () { }, fBound = function () {
@@ -14,6 +17,7 @@ if (!Function.prototype.bind) {
                 : oThis, aArgs.concat(Array.prototype.slice.call(arguments)));
         };
         if (this.prototype) {
+            // native functions don't have a prototype
             fNOP.prototype = this.prototype;
         }
         fBound.prototype = new fNOP();
@@ -80,6 +84,12 @@ function Handler(onFulfilled, onRejected, resolve, reject) {
     this.resolve = resolve;
     this.reject = reject;
 }
+/**
+ * Take a potentially misbehaving resolver function and make sure
+ * onFulfilled and onRejected are only called once.
+ *
+ * Makes no guarantees about asynchrony.
+ */
 function doResolve(fn, onFulfilled, onRejected) {
     var done = false;
     try {
@@ -163,6 +173,11 @@ var Promise = (function () {
             }
         });
     };
+    /**
+     * Set the immediate function to execute callbacks
+     * @param fn {function} Function to execute
+     * @private
+     */
     Promise._setImmediateFn = function (fn) {
         asap = fn;
     };

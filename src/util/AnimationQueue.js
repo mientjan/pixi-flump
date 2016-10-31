@@ -11,6 +11,11 @@ var AnimationQueue = (function (_super) {
         if (unit === void 0) { unit = 1000; }
         _super.call(this);
         this.frame = 0;
+        /**
+         * Will stop
+         * @property _freeze
+         * @type {boolean}
+         */
         this._freeze = false;
         this._hasStopped = false;
         this._time = 0;

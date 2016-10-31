@@ -1,3 +1,3 @@
 import {FlumpLibrary} from "./FlumpLibrary";
 
-export = FlumpLibrary;
+export = FlumpLibrary; 
