@@ -6,6 +6,7 @@ import {FlumpLibrary} from "../FlumpLibrary";
 import {LayerData} from "../data/LayerData";
 import {LabelData} from "../data/LabelData";
 import {KeyframeData} from "../data/KeyframeData";
+import * as PIXI from "pixi.js";
 
 export class MovieLayer extends PIXI.Container
 {

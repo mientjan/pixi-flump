@@ -6,6 +6,7 @@ import {MovieData} from "../data/MovieData";
 import {IPlayable} from "../interface/IPlayable";
 import {MovieLayer} from "../core/MovieLayer";
 import {LabelData} from "../data/LabelData";
+import * as PIXI from "pixi.js";
 
 /**
  * @author Mient-jan Stelling

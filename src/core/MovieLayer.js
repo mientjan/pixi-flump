@@ -7,6 +7,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 var FlumpMovie_1 = require("./FlumpMovie");
 var LabelData_1 = require("../data/LabelData");
 var KeyframeData_1 = require("../data/KeyframeData");
+var PIXI = require("pixi.js");
 var MovieLayer = (function (_super) {
     __extends(MovieLayer, _super);
     // public _storedMtx = new FlumpMtx(1, 0, 0, 1, 0, 0);

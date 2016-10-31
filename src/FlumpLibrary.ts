@@ -8,7 +8,7 @@ import {FlumpMovie} from "./core/FlumpMovie";
 import {ILibrary} from "./interface/ILibrary";
 import {MovieData} from "./data/MovieData";
 import {QueueItem} from "./util/QueueItem";
-
+import * as PIXI from "pixi.js";
 
 
 /**
@@ -166,7 +166,7 @@ export class FlumpLibrary implements ILoadable<FlumpLibrary>
 			if(movieData.id == name)
 			{
 				var movie = new FlumpMovie(this, name);
-				movie.getQueue().add(new QueueItem(null, 0, movie.frames, -1, 0))
+				movie.getQueue().add(new QueueItem(null, 0, movie.frames, -1, 0));
 				movie.paused = paused;
 				return movie;
 			}

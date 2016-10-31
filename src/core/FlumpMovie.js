@@ -7,6 +7,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 var AnimationQueue_1 = require("../util/AnimationQueue");
 var QueueItem_1 = require("../util/QueueItem");
 var MovieLayer_1 = require("../core/MovieLayer");
+var PIXI = require("pixi.js");
 /**
  * @author Mient-jan Stelling
  */

@@ -1,5 +1,6 @@
 "use strict";
 var Promise_1 = require("../util/Promise");
+var PIXI = require("pixi.js");
 var Texture = PIXI.Texture;
 var BaseTexture = PIXI.BaseTexture;
 var Rectangle = PIXI.Rectangle;

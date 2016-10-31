@@ -2,8 +2,10 @@ import {IHashMap} from "../interface/IHashMap";
 import {TextureGroupAtlas} from "./TextureGroupAtlas";
 import {IAtlas, ITextureGroup} from "../interface/ILibrary";
 import {FlumpLibrary} from "../FlumpLibrary";
-import Texture = PIXI.Texture;
 import {Promise} from "../util/Promise";
+
+import * as PIXI from "pixi.js";
+import Texture = PIXI.Texture;
 import Point = PIXI.Point;
 
 export class TextureGroup

@@ -1,6 +1,7 @@
 "use strict";
 var TextureGroupAtlas_1 = require("./TextureGroupAtlas");
 var Promise_1 = require("../util/Promise");
+var PIXI = require("pixi.js");
 var TextureGroup = (function () {
     function TextureGroup(names, textures, ancors) {
         // public textureGroupAtlases:Array<TextureGroupAtlas>;

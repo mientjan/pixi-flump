@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/mientjan/pixi-flump",
   "devDependencies": {
-    "jasmine-core": "2.4.1",
+    "@types/pixi.js": "^3.0.30",
     "browserify": "^13.0.0",
     "chai": "^3.2.0",
     "del": "^2.2.0",
@@ -39,9 +39,11 @@
     "gulp-plumber": "^1.0.1",
     "gulp-rename": "^1.2.2",
     "gulp-sourcemaps": "^1.5.2",
+    "gulp-typescript": "^2.13.0",
     "gulp-uglify": "^1.5.1",
     "gulp-util": "^3.0.6",
     "jaguarjs-jsdoc": "git+https://github.com/davidshimjs/jaguarjs-jsdoc.git",
+    "jasmine-core": "2.4.1",
     "jsdoc": "^3.4.0",
     "jshint-summary": "^0.4.0",
     "minimist": "^1.2.0",
@@ -49,10 +51,9 @@
     "require-dir": "^0.3.0",
     "run-sequence": "^1.1.2",
     "testem": "^0.9.4",
+    "typescript": "^2.0.6",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
-    "watchify": "^3.7.0",
-    "gulp-typescript": "^2.13.0",
-    "typescript": "^1.8.10"
+    "watchify": "^3.7.0"
   }
 }
