@@ -1,15 +1,13 @@
 import {FlumpLibrary} from "../FlumpLibrary";
 import {IAtlas} from "../interface/ILibrary";
-import {IHashMap} from "../interface/IHashMap";
 import {Promise} from "../util/Promise";
-import {TextureGroup} from "./TextureGroup";
-
 import * as PIXI from "pixi.js";
-import Texture = PIXI.Texture;
+
 import BaseTexture = PIXI.BaseTexture;
 import Rectangle = PIXI.Rectangle;
 import Sprite = PIXI.Sprite;
 import Point = PIXI.Point;
+import Texture = PIXI.Texture;
 
 export class TextureGroupAtlas
 {

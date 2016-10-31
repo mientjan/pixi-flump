@@ -1,10 +1,10 @@
 "use strict";
 var Promise_1 = require("../util/Promise");
 var PIXI = require("pixi.js");
-var Texture = PIXI.Texture;
 var BaseTexture = PIXI.BaseTexture;
 var Rectangle = PIXI.Rectangle;
 var Point = PIXI.Point;
+var Texture = PIXI.Texture;
 var TextureGroupAtlas = (function () {
     function TextureGroupAtlas(renderTexture, json) {
         this._names = [];

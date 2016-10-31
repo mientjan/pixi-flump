@@ -3,9 +3,9 @@ import { FlumpLibrary } from "../FlumpLibrary";
 import { IAtlas } from "../interface/ILibrary";
 import { Promise } from "../util/Promise";
 import * as PIXI from "pixi.js";
-import Texture = PIXI.Texture;
 import BaseTexture = PIXI.BaseTexture;
 import Point = PIXI.Point;
+import Texture = PIXI.Texture;
 export declare class TextureGroupAtlas {
     static load(library: FlumpLibrary, json: IAtlas): Promise<TextureGroupAtlas>;
     protected _baseTexture: BaseTexture;
